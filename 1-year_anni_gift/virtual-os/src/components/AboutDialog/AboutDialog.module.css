@@ -153,3 +153,6 @@
 .okBtn:active {
   transform: translate(1px, 1px);
 }
+@media (max-width: 600px) {
+  .dialog { width: calc(100vw - 20px); max-height: calc(100dvh - 24px); overflow-y: auto; }
+}
