@@ -11,7 +11,7 @@ const Taskbar = ({ openWindows, APPS, onTabClick, toggleStartMenu, onShowDesktop
   const [time, setTime] = useState(new Date());
   // Volume/Mute giờ lấy từ context dùng chung toàn OS, không còn là state cục bộ nữa
   const { volume, setVolume, isMuted, setIsMuted } = useSoundSettings();
-  const [batteryLevel, setBatteryLevel] = useState(100); // Mức pin đồng bộ
+  const [batteryLevel, setBatteryLevel] = useState(null); // Không giả định thiết bị đang 100%
   const [isCharging, setIsCharging] = useState(false); // Trạng thái đang sạc
 
   // 1. Cập nhật đồng hồ thời gian thực
@@ -125,9 +125,9 @@ const Taskbar = ({ openWindows, APPS, onTabClick, toggleStartMenu, onShowDesktop
         </div>
 
         {/* Battery Icon (sử dụng icon mới và đồng bộ thực tế) */}
-        <div className={styles.trayItem} title={`Battery: ${batteryLevel}% ${isCharging ? '(Charging)' : ''}`}>
+        <div className={styles.trayItem} title={batteryLevel === null ? "Battery status unavailable" : `Battery: ${batteryLevel}% ${isCharging ? '(Charging)' : ''}`}>
           <img src={batteryIcon} alt="Battery" className={styles.pixelIcon} />
-          <span className={`${styles.batteryText} ${isCharging ? styles.charging : ''}`}>{batteryLevel}%</span>
+          <span className={`${styles.batteryText} ${isCharging ? styles.charging : ''}`}>{batteryLevel === null ? "—" : `${batteryLevel}%`}</span>
         </div>
 
         {/* Đồng hồ & Ngày tháng (Format 24h & dd/mm/yyyy) */}
