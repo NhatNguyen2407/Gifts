@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 // Hook dùng chung cho mọi phần tử có thể tự do kéo thả trên desktop
 // (icon, sticky note, countdown widget...). Trả về vị trí hiện tại và
@@ -12,6 +12,10 @@ import { useState, useRef, useCallback } from 'react';
 // và tự đọc lại đúng vị trí đó ở lần load trang sau. Không truyền thì hook hoạt động y hệt
 // như trước (vị trí chỉ tồn tại trong phiên hiện tại, mất khi F5).
 export const useDraggable = (initialPosition, storageKey) => {
+  const clampPosition = (point) => ({
+    x: Math.max(0, Math.min(point.x, Math.max(0, window.innerWidth - 100))),
+    y: Math.max(0, Math.min(point.y, Math.max(0, window.innerHeight - 130))),
+  });
   const [position, setPosition] = useState(() => {
     if (storageKey) {
       try {
@@ -19,7 +23,7 @@ export const useDraggable = (initialPosition, storageKey) => {
         if (saved) {
           const parsed = JSON.parse(saved);
           if (typeof parsed?.x === 'number' && typeof parsed?.y === 'number') {
-            return parsed;
+            return clampPosition(parsed);
           }
         }
       } catch (e) {
@@ -27,12 +31,22 @@ export const useDraggable = (initialPosition, storageKey) => {
       }
     }
     // initialPosition có thể là giá trị {x,y} hoặc 1 hàm trả về {x,y} (lazy init, VD tính theo window.innerWidth)
-    return typeof initialPosition === 'function' ? initialPosition() : initialPosition;
+    return clampPosition(typeof initialPosition === 'function' ? initialPosition() : initialPosition);
   });
 
   const dragState = useRef({ startX: 0, startY: 0, originX: 0, originY: 0 });
   const justDraggedRef = useRef(false);
   const positionRef = useRef(position); // Theo dõi giá trị MỚI NHẤT để lưu localStorage lúc thả chuột, tránh bị "đóng băng" giá trị cũ do closure
+
+  useEffect(() => {
+    const onResize = () => setPosition((old) => {
+      const next = clampPosition(old);
+      positionRef.current = next;
+      return next.x === old.x && next.y === old.y ? old : next;
+    });
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const onDragMouseDown = useCallback((e) => {
     if (e.button !== 0) return; // Chỉ xử lý chuột trái
@@ -52,10 +66,10 @@ export const useDraggable = (initialPosition, storageKey) => {
       if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
         justDraggedRef.current = true;
       }
-      const nextPosition = {
+      const nextPosition = clampPosition({
         x: dragState.current.originX + deltaX,
         y: dragState.current.originY + deltaY,
-      };
+      });
       positionRef.current = nextPosition;
       setPosition(nextPosition);
     };
