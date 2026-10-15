@@ -93,9 +93,13 @@ const MusicPlayer = () => {
       setPlayProgress(0);
       setPlayElapsed(0);
       currentAudio.volume = effectiveVolume / 100;
-      currentAudio.play();
+      const playback = currentAudio.play();
       setPlayingId(id);
       setActiveAnalyser(getOrCreateAnalyser(id, currentAudio));
+      playback?.catch(() => {
+        setPlayingId((current) => current === id ? null : current);
+        setActiveAnalyser(null);
+      });
     }
   };
 
@@ -143,10 +147,12 @@ const MusicPlayer = () => {
           
           <div className={styles.playlistGrid}>
             {PLAYLIST.map((song) => (
-              <div 
-                key={song.id} 
+              <button
+                type="button"
+                key={song.id}
                 className={`${styles.songCard} ${playingId === song.id ? styles.playingCard : ''}`}
                 onClick={() => togglePlay(song.id)}
+                aria-label={`${playingId === song.id ? 'Tạm dừng' : 'Phát'} ${song.title}`}
               >
                 {/* Vinyl Đĩa Than */}
                 <div className={styles.vinylWrapper}>
@@ -177,21 +183,26 @@ const MusicPlayer = () => {
                 <div className={styles.playIndicator}>
                   {playingId === song.id ? '⏸' : '▶'}
                 </div>
-
-                <audio 
-                  ref={(el) => (audioRefs.current[song.id] = el)} 
-                  src={song.src}
-                  onLoadedMetadata={handleLoadedMetadata(song.id)}
-                  onTimeUpdate={playingId === song.id ? handleTimeUpdate : undefined}
-                  onEnded={() => { setPlayingId(null); setPlayProgress(0); setPlayElapsed(0); setActiveAnalyser(null); }}
-                />
-              </div>
+              </button>
             ))}
           </div>
         </div>
       )}
 
       {/* past */}
+      <div hidden aria-hidden="true">
+        {PLAYLIST.map((song) => (
+          <audio
+            key={song.id}
+            ref={(el) => { audioRefs.current[song.id] = el; }}
+            src={song.src}
+            onLoadedMetadata={handleLoadedMetadata(song.id)}
+            onTimeUpdate={handleTimeUpdate}
+            onEnded={() => { setPlayingId(null); setPlayProgress(0); setPlayElapsed(0); setActiveAnalyser(null); }}
+          />
+        ))}
+      </div>
+
       {activeTab === 'past' && (
         <div className={styles.tabContent}>
           <p className={styles.description}>
