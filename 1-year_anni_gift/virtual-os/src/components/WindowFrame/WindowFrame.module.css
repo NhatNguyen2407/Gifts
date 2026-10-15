@@ -66,6 +66,7 @@
 }
 
 .header {
+  touch-action: none;
   background-color: #f3e5f5;
   border-bottom: 2px solid #b39ddb;
   padding: 6px 12px;
@@ -147,6 +148,7 @@
 }
 
 .resizeHandle {
+  touch-action: none;
   position: absolute;
   z-index: 20;
   background: transparent;
