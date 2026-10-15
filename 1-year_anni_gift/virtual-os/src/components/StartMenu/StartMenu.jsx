@@ -6,7 +6,7 @@ const StartMenu = ({ APPS, onOpenApp, onLock }) => {
   const [showAbout, setShowAbout] = useState(false);
 
   return (
-    <div className={styles.startMenu}>
+    <div data-start-menu className={styles.startMenu}>
       {/*Header của Menu*/}
       <button className={styles.header} onClick={() => setShowAbout(true)} title="About BiBi-OS">
         <div className={styles.avatar}>💜</div>
