@@ -136,6 +136,13 @@ const Desktop = () => {
     }
   };
 
+  const handleShowDesktop = () => {
+    setOpenWindows((current) => {
+      const hasVisible = current.some((win) => !win.isMinimized);
+      return current.map((win) => ({ ...win, isMinimized: hasVisible }));
+    });
+  };
+
   const handleContextMenu = (e) => {
     e.preventDefault(); 
     setIsStartMenuOpen(false);
@@ -250,7 +257,8 @@ const Desktop = () => {
         openWindows={openWindows} 
         APPS={APPS} 
         onTabClick={handleTaskbarClick} 
-        toggleStartMenu={() => setIsStartMenuOpen(!isStartMenuOpen)} 
+        toggleStartMenu={() => setIsStartMenuOpen(!isStartMenuOpen)}
+        onShowDesktop={handleShowDesktop} 
       />
 
       {fakeScreen && (
