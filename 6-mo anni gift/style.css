@@ -443,3 +443,29 @@ body {
     0% { transform: scale(0.95) rotate(-5deg); }
     100% { transform: scale(1.1) rotate(10deg); }
 }
+/* Small screens: preserve photo layouts without horizontal overflow. */
+@media (max-width: 768px) {
+  .gallery-split-container, .pets-grid-container {
+    flex-wrap: wrap;
+    gap: 18px;
+    width: min(100%, 640px);
+    padding: 0 12px;
+  }
+  .gallery-half, .pet-column {
+    flex: 1 1 230px;
+    min-width: 0;
+  }
+  .gallery-grid { gap: 10px; }
+  .gallery-card, .pet-column .gallery-card { padding: 8px; }
+  .reminders-list { padding: 18px; font-size: 1.1em; }
+  .final-card { padding: 20px; width: min(94%, 600px); }
+  .blob { max-width: 80vw; max-height: 80vw; }
+}
+@media (max-width: 480px) {
+  .gallery-half, .pet-column { flex-basis: 100%; }
+  .gallery-grid { gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .heart, .blob, .doodle, .photo-doodle,
+  .vinyl-wrapper.spinning { animation: none !important; }
+}
