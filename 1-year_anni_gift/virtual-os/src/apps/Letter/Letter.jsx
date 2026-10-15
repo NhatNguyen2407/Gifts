@@ -5,6 +5,7 @@ import { useSound } from '../../hooks/useSound';
 const Letter = () => {
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(true);
+  const skippedRef = React.useRef(false);
   const { playType } = useSound();
 
   // Nội dung bức thư gốc 
@@ -28,6 +29,10 @@ Bibii 💜`;
     let currentIndex = 0;
     
     const typingInterval = setInterval(() => {
+      if (skippedRef.current) {
+        clearInterval(typingInterval);
+        return;
+      }
       if (currentIndex < fullText.length) {
         const nextChar = fullText[currentIndex];
         setDisplayedText(fullText.slice(0, currentIndex + 1));
@@ -50,6 +55,7 @@ Bibii 💜`;
       <div className={styles.notepad}>
         <span className={styles.text}>{displayedText}</span>
         <span className={`${styles.cursor} ${!isTyping ? styles.blink : ''}`}>|</span>
+        {isTyping && <button type="button" onClick={() => { skippedRef.current = true; setDisplayedText(fullText); setIsTyping(false); }}>Hiện toàn bộ thư</button>}
       </div>
     </div>
   );
