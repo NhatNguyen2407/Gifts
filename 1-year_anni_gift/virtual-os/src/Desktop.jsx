@@ -179,7 +179,10 @@ const Desktop = () => {
     <div 
       style={getBackgroundStyle()} 
       onContextMenu={handleContextMenu} 
-      onClick={() => { setIsStartMenuOpen(false); setContextMenu(null); }}
+      onClick={(e) => {
+        if (!e.target.closest('[data-start-menu]')) setIsStartMenuOpen(false);
+        setContextMenu(null);
+      }}
     >
       {APPS.map((app, index) => (
         <DesktopIcon 
