@@ -39,6 +39,7 @@ const MusicPlayer = () => {
   const [playProgress, setPlayProgress] = useState(0); // % tiến trình bài đang phát
   const [playElapsed, setPlayElapsed] = useState(0); // Giây hiện tại của bài đang phát
   const [durations, setDurations] = useState({}); // { [songId]: giây } - tự điền khi tải xong metadata, độc lập theo từng bài
+  const playingRef = useRef(null);
   const audioRefs = useRef({}); // Lưu trữ các thẻ <audio>
   const analyserRefs = useRef({}); // Cache AnalyserNode theo từng song 
   const [activeAnalyser, setActiveAnalyser] = useState(null); // AnalyserNode của bài đang phát, null nếu không có bài nào chạy
@@ -81,15 +82,19 @@ const MusicPlayer = () => {
   const togglePlay = (id) => {
     const currentAudio = audioRefs.current[id];
 
-    if (playingId === id) {
+    if (!currentAudio) return;
+
+    if (playingRef.current === id) {
+      playingRef.current = null;
       currentAudio.pause();
       setPlayingId(null);
       setActiveAnalyser(null);
     } else {
-      if (playingId && audioRefs.current[playingId]) {
-        audioRefs.current[playingId].pause();
-        audioRefs.current[playingId].currentTime = 0; 
+      if (playingRef.current && audioRefs.current[playingRef.current]) {
+        audioRefs.current[playingRef.current].pause();
+        audioRefs.current[playingRef.current].currentTime = 0;
       }
+      playingRef.current = id;
       setPlayProgress(0);
       setPlayElapsed(0);
       currentAudio.volume = effectiveVolume / 100;
@@ -97,7 +102,9 @@ const MusicPlayer = () => {
       setPlayingId(id);
       setActiveAnalyser(getOrCreateAnalyser(id, currentAudio));
       playback?.catch(() => {
-        setPlayingId((current) => current === id ? null : current);
+        if (playingRef.current !== id) return;
+        playingRef.current = null;
+        setPlayingId(null);
         setActiveAnalyser(null);
       });
     }
@@ -105,11 +112,18 @@ const MusicPlayer = () => {
 
   const handleTimeUpdate = (e) => {
     const { currentTime, duration } = e.target;
+    const songId = Object.keys(audioRefs.current).find((id) => audioRefs.current[id] === e.currentTarget);
+    if (playingRef.current !== songId) return;
     setPlayElapsed(currentTime);
     if (duration > 0) {
       setPlayProgress((currentTime / duration) * 100);
     }
   };
+
+  useEffect(() => () => {
+    Object.values(audioRefs.current).forEach((audio) => audio?.pause());
+    audioRefs.current = {};
+  }, []);
 
   const handleLoadedMetadata = (songId) => (e) => {
     setDurations((prev) => ({ ...prev, [songId]: e.target.duration }));
@@ -198,7 +212,11 @@ const MusicPlayer = () => {
             src={song.src}
             onLoadedMetadata={handleLoadedMetadata(song.id)}
             onTimeUpdate={handleTimeUpdate}
-            onEnded={() => { setPlayingId(null); setPlayProgress(0); setPlayElapsed(0); setActiveAnalyser(null); }}
+            onEnded={() => {
+              if (playingRef.current !== song.id) return;
+              playingRef.current = null;
+              setPlayingId(null); setPlayProgress(0); setPlayElapsed(0); setActiveAnalyser(null);
+            }}
           />
         ))}
       </div>
