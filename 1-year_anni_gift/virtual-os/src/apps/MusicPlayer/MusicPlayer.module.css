@@ -220,3 +220,16 @@
 
 .pastTitle { font-family: 'VT323', monospace; font-size: 24px; color: #4a148c; margin: 0 0 6px 0; }
 .pastDesc { font-size: 14px; color: #666; margin: 0; }
+.songCard {
+  font: inherit;
+  text-align: left;
+  width: 100%;
+  min-width: 0;
+}
+
+.tabContent { min-height: 0; overflow-y: auto; }
+
+@media (max-width: 600px) {
+  .playlistGrid, .pastGrid { grid-template-columns: 1fr; }
+  .tabBtn { flex: 1; font-size: 18px; padding: 6px 8px; }
+}
