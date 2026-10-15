@@ -1,5 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './WindowFrame.module.css';
+
+const TASKBAR_HEIGHT = 60;
+const MIN_WIDTH = 320;
+const MIN_HEIGHT = 220;
 
 const RESIZE_HANDLES = [
   { dir: 'n', className: styles.handleN },
@@ -12,168 +16,151 @@ const RESIZE_HANDLES = [
   { dir: 'sw', className: styles.handleSW },
 ];
 
-const MIN_WIDTH = 320;
-const MIN_HEIGHT = 220;
+const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
+
+const viewport = () => ({
+  width: Math.max(1, window.innerWidth),
+  height: Math.max(1, window.innerHeight - TASKBAR_HEIGHT),
+});
+
+const fitFrame = (frame) => {
+  const { width: vw, height: vh } = viewport();
+  const width = clamp(frame.width, Math.min(MIN_WIDTH, vw), vw);
+  const height = clamp(frame.height, Math.min(MIN_HEIGHT, vh), vh);
+  return {
+    x: clamp(frame.x, 0, vw - width),
+    y: clamp(frame.y, 0, vh - height),
+    width,
+    height,
+  };
+};
+
+const initialFrame = () => {
+  const { width: vw, height: vh } = viewport();
+  const width = Math.min(750, Math.max(Math.min(MIN_WIDTH, vw), vw - 24));
+  const height = Math.min(450, Math.max(Math.min(MIN_HEIGHT, vh), vh - 24));
+  return {
+    x: Math.max(0, Math.round((vw - width) / 2)),
+    y: Math.max(0, Math.round((vh - height) / 2)),
+    width,
+    height,
+  };
+};
 
 const WindowFrame = ({ title, children, onClose, onMinimize, zIndex, onFocus, isMinimized, isClosing }) => {
   const [isMaximized, setIsMaximized] = useState(false);
+  const [frame, setFrame] = useState(initialFrame);
+  const interactionRef = useRef(null);
 
-  const [size, setSize] = useState({ width: 750, height: 450 });
-  const [position, setPosition] = useState({
-    x: Math.random() * 50 + 50,
-    y: Math.random() * 50 + 20
-  });
-
-  const dragRef = useRef({ isDragging: false, startX: 0, startY: 0, initialX: 0, initialY: 0 });
-  const resizeRef = useRef({
-    isResizing: false,
-    dir: null,
-    startX: 0,
-    startY: 0,
-    initialWidth: 0,
-    initialHeight: 0,
-    initialX: 0,
-    initialY: 0,
-  });
-
-  const onMouseDownDrag = (e) => {
-    if (isMaximized) return;
-    dragRef.current = {
-      isDragging: true,
-      startX: e.clientX,
-      startY: e.clientY,
-      initialX: position.x,
-      initialY: position.y
-    };
-    document.body.classList.add(styles.noSelect);
-    onFocus();
-  };
-
-  const onMouseDownResize = (e, dir) => {
-    e.stopPropagation();
-    e.preventDefault();
-    if (isMaximized) return;
-    resizeRef.current = {
-      isResizing: true,
+  const startInteraction = (e, dir) => {
+    if (e.button !== 0 || isMaximized || (dir === 'move' && e.target.closest('button'))) return;
+    interactionRef.current = {
+      pointerId: e.pointerId,
       dir,
       startX: e.clientX,
       startY: e.clientY,
-      initialWidth: size.width,
-      initialHeight: size.height,
-      initialX: position.x,
-      initialY: position.y,
+      frame,
     };
-    onFocus();
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    document.body.classList.add(styles.noSelect);
   };
 
   useEffect(() => {
-    const onMouseMove = (e) => {
-      if (dragRef.current.isDragging) {
-        setPosition({
-          x: dragRef.current.initialX + (e.clientX - dragRef.current.startX),
-          y: dragRef.current.initialY + (e.clientY - dragRef.current.startY)
-        });
-      } else if (resizeRef.current.isResizing) {
-        const {
-          dir, startX, startY, initialWidth, initialHeight, initialX, initialY,
-        } = resizeRef.current;
-        const deltaX = e.clientX - startX;
-        const deltaY = e.clientY - startY;
+    const onMove = (e) => {
+      const active = interactionRef.current;
+      if (!active || active.pointerId !== e.pointerId) return;
 
-        let nextWidth = initialWidth;
-        let nextHeight = initialHeight;
-        let nextX = initialX;
-        let nextY = initialY;
+      const { width: vw, height: vh } = viewport();
+      const { dir, frame: start } = active;
+      const dx = e.clientX - active.startX;
+      const dy = e.clientY - active.startY;
+      const next = { ...start };
+      const minWidth = Math.min(MIN_WIDTH, vw);
+      const minHeight = Math.min(MIN_HEIGHT, vh);
 
-        if (dir.includes('e')) {
-          nextWidth = Math.max(MIN_WIDTH, initialWidth + deltaX);
-        }
+      if (dir === 'move') {
+        next.x = clamp(start.x + dx, 0, vw - start.width);
+        next.y = clamp(start.y + dy, 0, vh - start.height);
+      } else {
+        if (dir.includes('e')) next.width = clamp(start.width + dx, minWidth, vw - start.x);
+        if (dir.includes('s')) next.height = clamp(start.height + dy, minHeight, vh - start.y);
         if (dir.includes('w')) {
-          const proposedWidth = initialWidth - deltaX;
-          nextWidth = Math.max(MIN_WIDTH, proposedWidth);
-          nextX = initialX + (initialWidth - nextWidth);
-        }
-        if (dir.includes('s')) {
-          nextHeight = Math.max(MIN_HEIGHT, initialHeight + deltaY);
+          next.x = clamp(start.x + dx, 0, start.x + start.width - minWidth);
+          next.width = start.x + start.width - next.x;
         }
         if (dir.includes('n')) {
-          const proposedHeight = initialHeight - deltaY;
-          nextHeight = Math.max(MIN_HEIGHT, proposedHeight);
-          nextY = initialY + (initialHeight - nextHeight);
+          next.y = clamp(start.y + dy, 0, start.y + start.height - minHeight);
+          next.height = start.y + start.height - next.y;
         }
-
-        setSize({ width: nextWidth, height: nextHeight });
-        setPosition({ x: nextX, y: nextY });
       }
+      setFrame(fitFrame(next));
     };
 
-    const onMouseUp = () => {
-      dragRef.current.isDragging = false;
-      resizeRef.current.isResizing = false;
+    const onEnd = (e) => {
+      if (interactionRef.current?.pointerId !== e.pointerId) return;
+      interactionRef.current = null;
       document.body.classList.remove(styles.noSelect);
-      document.body.style.cursor = '';
     };
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+    const onResize = () => setFrame((previous) => fitFrame(previous));
+
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onEnd);
+    window.addEventListener('pointercancel', onEnd);
+    window.addEventListener('resize', onResize);
     return () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onEnd);
+      window.removeEventListener('pointercancel', onEnd);
+      window.removeEventListener('resize', onResize);
+      document.body.classList.remove(styles.noSelect);
     };
   }, []);
 
-  const handleResizeMouseDown = (e, dir) => {
-    onMouseDownResize(e, dir);
-    document.body.classList.add(styles.noSelect);
-    const cursorMap = {
-      n: 'ns-resize', s: 'ns-resize',
-      e: 'ew-resize', w: 'ew-resize',
-      ne: 'nesw-resize', sw: 'nesw-resize',
-      nw: 'nwse-resize', se: 'nwse-resize',
-    };
-    document.body.style.cursor = cursorMap[dir];
-  };
-
   const frameStyle = {
     position: 'absolute',
-    top: isMaximized ? 0 : position.y,
-    left: isMaximized ? 0 : position.x,
-    width: isMaximized ? '100vw' : size.width,
-    height: isMaximized ? 'calc(100vh - 60px)' : size.height,
-    zIndex: zIndex,
-    display: isMinimized ? 'none' : 'flex'
+    top: isMaximized ? 0 : frame.y,
+    left: isMaximized ? 0 : frame.x,
+    width: isMaximized ? '100%' : frame.width,
+    height: isMaximized ? `calc(100% - ${TASKBAR_HEIGHT}px)` : frame.height,
+    zIndex,
+    display: isMinimized ? 'none' : 'flex',
   };
 
   return (
     <div
       className={`${styles.window} ${isMaximized ? styles.maximized : ''} ${isClosing ? styles.closing : ''}`}
       style={frameStyle}
-      onMouseDown={onFocus}
+      onPointerDown={onFocus}
     >
-      <div className={styles.header} onMouseDown={onMouseDownDrag} onDoubleClick={() => !isMaximized && setIsMaximized(true)}>
+      <div
+        className={styles.header}
+        onPointerDown={(e) => startInteraction(e, 'move')}
+        onDoubleClick={(e) => {
+          if (!e.target.closest('button')) setIsMaximized((value) => !value);
+        }}
+      >
         <div className={styles.title}>{title}</div>
         <div className={styles.controls}>
-          <button className={styles.btn} onClick={(e) => { e.stopPropagation(); onMinimize(); }}>_</button>
-          <button className={styles.btn} onClick={(e) => { e.stopPropagation(); setIsMaximized(!isMaximized); }}>
+          <button type="button" aria-label="Minimize" className={styles.btn} onClick={(e) => { e.stopPropagation(); onMinimize(); }}>_</button>
+          <button type="button" aria-label={isMaximized ? 'Restore window' : 'Maximize'} className={styles.btn} onClick={(e) => { e.stopPropagation(); setIsMaximized((value) => !value); }}>
             {isMaximized ? '❐' : '□'}
           </button>
-          <button className={`${styles.btn} ${styles.closeBtn}`} onClick={(e) => { e.stopPropagation(); onClose(); }}>X</button>
+          <button type="button" aria-label="Close" className={`${styles.btn} ${styles.closeBtn}`} onClick={(e) => { e.stopPropagation(); onClose(); }}>X</button>
         </div>
       </div>
 
-      <div className={styles.content}>
-        {children}
-      </div>
+      <div className={styles.content}>{children}</div>
 
       {!isMaximized && RESIZE_HANDLES.map(({ dir, className }) => (
         <div
           key={dir}
           className={`${styles.resizeHandle} ${className}`}
-          onMouseDown={(e) => handleResizeMouseDown(e, dir)}
+          onPointerDown={(e) => startInteraction(e, dir)}
         />
       ))}
 
-      {!isMaximized && <div className={styles.resizerVisual}></div>}
+      {!isMaximized && <div className={styles.resizerVisual} />}
     </div>
   );
 };
