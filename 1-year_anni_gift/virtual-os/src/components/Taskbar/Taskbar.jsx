@@ -70,7 +70,7 @@ const Taskbar = ({ openWindows, APPS, onTabClick, toggleStartMenu }) => {
       
       {/* KHU VỰC BÊN TRÁI: Start (giữ nguyên) */}
       <div className={styles.leftSection}>
-        <button className={styles.startBtn} title="Start Menu" onClick={toggleStartMenu}>
+        <button data-start-menu className={styles.startBtn} title="Start Menu" onClick={toggleStartMenu}>
           <span className={styles.startIcon}>✿</span>
           <span>Start</span>
         </button>
