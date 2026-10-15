@@ -22,33 +22,12 @@ import styles from './Timeline.module.css';
 const TIMELINE_DATA = [
   {
     id: 1,
-    date: '__/__/____',
-    title: 'Lần đầu gặp nhau',
-    description: 'Kể lại khoảnh khắc',
-    image: null,
-  },
-  {
-    id: 2,
-    date: '__/__/____',
-    title: 'Lần đầu đi chơi cùng nhau',
-    description: '',
-    image: null,
-  },
-  {
-    id: 3,
     date: '24/10/2025',
     title: 'Ngày chính thức yêu nhau',
-    description: 'Kể lại khoảnh khắc',
-    image: null,
-  },
-  {
-    id: 4,
-    date: '__/__/____',
-    title: 'Một cột mốc đáng nhớ khác',
     description: '',
     image: null,
   },
-  //  Thêm mốc
+  // Add earlier and later milestones only when dates and details are confirmed.
 ];
 
 const Timeline = () => {
