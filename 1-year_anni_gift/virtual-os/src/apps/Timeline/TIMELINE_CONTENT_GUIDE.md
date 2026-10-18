@@ -1,4 +1,4 @@
-# TIMELINE.EXE — cách bổ sung kỷ niệm
+# TIMELINE.EXE - cách bổ sung kỷ niệm
 
 **Phạm vi:** chỉ dự án `1-year_anni_gift/virtual-os`, không chỉnh website 6 tháng.
 
@@ -32,7 +32,7 @@
    },
    ```
 5. Mỗi ngày có thể thêm nhiều sự kiện, mỗi sự kiện có thể chứa nhiều ảnh. Giao diện sẽ tự đưa sự kiện vào đúng tháng theo ngày.
-6. Sự kiện ngoài khoảng 24/10/2025–23/10/2026 sẽ không hiển thị trong 12 chương.
+6. Sự kiện ngoài khoảng 24/10/2025-23/10/2026 sẽ không hiển thị trong 12 chương.
 
 **Lưu ý:** Đây là ví dụ về cấu trúc, không phải kỷ niệm thật. Ở thời điểm tạo giao diện, chỉ có mốc 24/10/2025 được giữ lại từ code cũ.
 

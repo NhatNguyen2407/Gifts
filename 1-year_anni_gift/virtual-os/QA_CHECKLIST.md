@@ -1,4 +1,4 @@
-# Virtual OS — Regression QA
+# Virtual OS - Regression QA
 
 These are **manual tests**, not claims that they have been executed. Run after every significant deployment; record PASS/FAIL and browser/device details.
 
