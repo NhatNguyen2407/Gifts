@@ -1,17 +1,18 @@
 # Gifts
 
-A collection of personal interactive web projects. The repository currently contains two separate experiences.
+A collection of personal interactive web projects. Each project is kept in its own folder, with its source code and documentation together.
 
 ## Projects
 
-- [Six-month anniversary site](6-mo%20anni%20gift/) - a self-contained HTML, CSS, and JavaScript website with images and audio.
-- [Virtual OS](1-year_anni_gift/virtual-os/README.md) - a React and Vite desktop-style experience with movable windows, mini apps, games, and music.
+- [Six-month anniversary site](6-mo%20anni%20gift/) - A self-contained HTML, CSS, and JavaScript website with images and audio.
+- [Virtual OS](1-year_anni_gift/virtual-os/README.md) - A React and Vite desktop-style experience with movable windows, mini apps, games, and music.
+- [20-10-2026](20-10-2026/README.md) - An interactive 20/10 greeting with Tiny, animated scenes, cats, a Rem GIF, and optional music-synced lyrics.
 
-## Open the projects
+## Run the projects
 
-For the six-month site, open `6-mo anni gift/index.html` in a browser. Its CSS, JavaScript, images, and audio are stored alongside the page.
+The six-month site and `20-10-2026` work as static web pages. Open their `index.html` files through Live Server or Live Preview in VS Code.
 
-For Virtual OS, use Node.js from its application folder:
+The Virtual OS project uses React and Vite:
 
 ```bash
 cd 1-year_anni_gift/virtual-os
@@ -19,8 +20,8 @@ npm install
 npm run dev
 ```
 
-See the [Virtual OS README](1-year_anni_gift/virtual-os/README.md) for its features, scripts, and verification checklist.
+Each project folder has its own README with more details.
 
 ## Notes
 
-These projects contain personal creative content and locally stored media. The repository's public availability does not imply that every image, song, or other asset is licensed for reuse.
+These are personal creative projects. Some media, character designs, and external assets belong to their original creators. Having a public source repository does not grant a license to reuse third-party material.
