@@ -1,8 +1,0 @@
-# Private or rights-managed music and local exports
-assets/*.mp3
-assets/*.wav
-assets/*.flac
-*.zip
-.DS_Store
-Thumbs.db
-.vscode/
