@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './Timeline.module.css';
-import { formatTimelineDate, getTimelineChapters } from './timelineData';
+import { getTimelineChapters } from './timelineData';
 
 const chapters = getTimelineChapters();
 
@@ -91,11 +91,6 @@ const Timeline = () => {
           <p className={styles.heroDescription}>
             Một năm đầu tiên, được kể lại bằng những bức ảnh nhỏ.
           </p>
-          <div className={styles.heroDates}>
-            <span>24.10.2025</span>
-            <span className={styles.dateConnector} aria-hidden="true">♡</span>
-            <span>24.10.2026</span>
-          </div>
           <span className={styles.scrollHint}>Cuộn xuống để xem từng chương ↓</span>
         </header>
 
@@ -123,10 +118,6 @@ const Timeline = () => {
                 <h3 className={styles.chapterTitle} id={`story-month-${month.number}`}>
                   {month.title}
                 </h3>
-                <p className={styles.chapterDates}>
-                  {formatTimelineDate(month.startDate)} — {formatTimelineDate(month.endDate)}
-                </p>
-                <p className={styles.chapterNote}>{month.note}</p>
 
                 {month.albumPhotos.length > 0 ? (
                   <div className={styles.collage}>
@@ -163,7 +154,6 @@ const Timeline = () => {
           <span aria-hidden="true">♡</span>
           <p>12 tháng — một cuốn album nhỏ.</p>
           <strong>To be continued...</strong>
-          <span className={styles.endingDate}>24.10.2026</span>
         </footer>
         <span className={styles.srOnly}>{filledMonths} trong 12 tháng đã có ảnh.</span>
       </div>
