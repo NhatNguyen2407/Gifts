@@ -43,7 +43,7 @@ const makeDeck = (mode) => {
   ]));
 };
 
-const MemoryMatch = () => {
+const MemoryMatch = ({ onExit }) => {
   const [mode, setMode] = useState(null);
   const [deck, setDeck] = useState([]);
   const [flipped, setFlipped] = useState([]);
@@ -180,7 +180,7 @@ const MemoryMatch = () => {
             <div className={styles.popupActions}>
               <button className={styles.restartBtn} type="button" onClick={() => startGame(mode)}>Chơi lại</button>
               <button className={styles.restartBtn} type="button" onClick={exitGame}>Đổi chế độ</button>
-              <button className={styles.restartBtn} type="button" onClick={exitGame}>Thoát</button>
+              <button className={styles.restartBtn} type="button" onClick={onExit || exitGame}>Thoát</button>
             </div>
           </div>
         </div>

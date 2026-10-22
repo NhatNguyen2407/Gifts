@@ -224,7 +224,7 @@ const Desktop = () => {
             onClose={() => handleCloseApp(openedApp.id)}
             onMinimize={() => handleMinimizeApp(openedApp.id)}
           >
-            {appData.content}
+            {openedApp.id === 'memory' ? <MemoryMatch onExit={() => handleCloseApp('memory')} /> : appData.content}
           </WindowFrame>
         );
       })}
