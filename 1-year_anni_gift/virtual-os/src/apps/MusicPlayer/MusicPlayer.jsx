@@ -22,6 +22,8 @@ import sukidakaraAudio from '../../assets/audio/sukidakara.mp3';
 import escapismAudio from '../../assets/audio/escapism.mp3';
 import hereComesAudio from '../../assets/audio/herecomesathought.mp3';
 import loveLikeYouAudio from '../../assets/audio/lovelikeyou.mp3';
+import shioriAudio from '../../assets/audio/shiori.mp3';
+import yeuEmTrongMoAudio from '../../assets/audio/yeu_em_trong_mo.mp3';
 
 // 3. Data Playlist
 const SIX_MONTHS_PLAYLIST = [
@@ -33,8 +35,12 @@ const SIX_MONTHS_PLAYLIST = [
   { id: 's6', title: 'Love Like You', artist: 'Steven Universe', cover: loveLikeYouImg, src: loveLikeYouAudio },
 ];
 
-// Các bài mới sẽ được thêm vào đây khi có file nhạc và cover.
-const NOW_PLAYLIST = [];
+// Hai bài được thêm từ commit add audio. Mốc gần chorus là ước lượng,
+// có thể thay previewRatio của từng bài sau khi nghe lại.
+const NOW_PLAYLIST = [
+  { id: 'n1', title: 'Shiori', artist: '', cover: null, src: shioriAudio, previewRatio: 0.33 },
+  { id: 'n2', title: 'Yêu Em Trong Mơ', artist: '', cover: null, src: yeuEmTrongMoAudio, previewRatio: 0.33 },
+];
 const ALL_SONGS = [...SIX_MONTHS_PLAYLIST, ...NOW_PLAYLIST];
 
 const MusicPlayer = () => {
@@ -82,6 +88,19 @@ const MusicPlayer = () => {
     }
   };
 
+  // Tua đến khoảng một phần ba bài cho nhạc mới (gần điệp khúc, chưa xác minh).
+  // Các bài thuộc playlist 6 tháng trước vẫn bắt đầu từ giây đầu tiên.
+  const seekToPreview = (songId, audio) => {
+    const song = NOW_PLAYLIST.find((item) => item.id === songId);
+    if (!song?.previewRatio || !Number.isFinite(audio.duration) || audio.duration <= 0) return;
+    const point = Math.max(0, Math.min(audio.duration - 10, Math.floor(audio.duration * song.previewRatio)));
+    if (audio.currentTime < 1 || audio.ended) {
+      audio.currentTime = point;
+      setPlayElapsed(point);
+      setPlayProgress(point / audio.duration * 100);
+    }
+  };
+
   // Hàm xử lý Play/Pause nhạc
   const togglePlay = (id) => {
     const currentAudio = audioRefs.current[id];
@@ -102,6 +121,7 @@ const MusicPlayer = () => {
       setPlayProgress(0);
       setPlayElapsed(0);
       currentAudio.volume = effectiveVolume / 100;
+      seekToPreview(id, currentAudio);
       const playback = currentAudio.play();
       setPlayingId(id);
       setActiveAnalyser(getOrCreateAnalyser(id, currentAudio));
@@ -131,6 +151,7 @@ const MusicPlayer = () => {
 
   const handleLoadedMetadata = (songId) => (e) => {
     setDurations((prev) => ({ ...prev, [songId]: e.target.duration }));
+    if (playingRef.current === songId) seekToPreview(songId, e.target);
   };
 
   const renderSongCard = (song) => (
@@ -143,18 +164,25 @@ const MusicPlayer = () => {
               >
                 {/* Vinyl Đĩa Than */}
                 <div className={styles.vinylWrapper}>
-                  <img 
-                    src={song.cover} 
-                    alt={song.title} 
-                    className={`${styles.vinylRecord} ${playingId === song.id ? styles.spinning : ''}`} 
-                  />
+                  {song.cover ? (
+                    <img
+                      src={song.cover}
+                      alt={song.title}
+                      className={`${styles.vinylRecord} ${playingId === song.id ? styles.spinning : ''}`}
+                    />
+                  ) : (
+                    <span
+                      className={`${styles.vinylRecord} ${styles.vinylPlaceholder} ${playingId === song.id ? styles.spinning : ''}`}
+                      aria-hidden="true"
+                    >♪</span>
+                  )}
                   <div className={styles.vinylHole}></div>
                 </div>
                 
                 {/* Thông tin bài hát */}
                 <div className={styles.songInfo}>
                   <h4 className={styles.songTitle}>{song.title}</h4>
-                  <p className={styles.songArtist}>{song.artist}</p>
+                  {song.artist && <p className={styles.songArtist}>{song.artist}</p>}
                   <p className={styles.songDuration}>
                     {playingId === song.id
                       ? `${formatTime(playElapsed)} / ${formatTime(durations[song.id])}`
@@ -232,9 +260,10 @@ const MusicPlayer = () => {
             src={song.src}
             onLoadedMetadata={handleLoadedMetadata(song.id)}
             onTimeUpdate={handleTimeUpdate}
-            onEnded={() => {
+            onEnded={(event) => {
               if (playingRef.current !== song.id) return;
               playingRef.current = null;
+              event.currentTarget.currentTime = 0;
               setPlayingId(null); setPlayProgress(0); setPlayElapsed(0); setActiveAnalyser(null);
             }}
           />

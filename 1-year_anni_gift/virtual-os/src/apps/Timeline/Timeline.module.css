@@ -42,8 +42,6 @@
   color: #7d4c83;
 }
 .heroDescription { max-width: 320px; margin: 0; color: #987b9f; line-height: 1.6; }
-.heroDates { display: flex; align-items: center; gap: 22px; color: #8d609a; font: 18px 'VT323', monospace; }
-.dateConnector { color: #d183b1; }
 .scrollHint { margin-top: 8px; color: #a381aa; font: 16px 'VT323', monospace; }
 
 .story {
@@ -119,8 +117,6 @@
 .chapterNumber { color: #ac89ae; font: 16px 'VT323', monospace; letter-spacing: 1.5px; }
 .chapterHeart { font-size: 23px; line-height: 1; color: #db95b6; }
 .chapterTitle { margin: 6px 0 2px; color: #83548e; font-size: 24px; font-weight: normal; }
-.chapterDates { margin: 0; font: 16px 'VT323', monospace; color: #aa8aac; }
-.chapterNote { margin: 12px 0 13px; font-size: 14px; color: #987b9f; line-height: 1.5; }
 
 .collage {
   display: grid;
@@ -172,7 +168,6 @@
 .ending > span:first-child { font-size: 36px; color: #cf94b6; }
 .ending p { margin: 0; }
 .ending strong { font-size: 26px; font-weight: normal; color: #8b598d; }
-.endingDate { font: 17px 'VT323', monospace; letter-spacing: 2px; }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
 
 .lightboxBackdrop {
@@ -222,7 +217,6 @@
 }
 @media (max-width: 480px) {
   .hero { padding: 33px 12px; }
-  .heroDates { gap: 12px; }
   .story { padding-left: 42px; padding-right: 8px; }
   .timelineRail { left: 20px; }
   .monthMarker { left: -36px; width: 28px; height: 28px; border-width: 2px; font-size: 16px; }

@@ -253,3 +253,14 @@
   text-align: center;
 }
 @media (prefers-reduced-motion: reduce) { .spinning { animation: none; } }
+
+/* Cover trung tính cho bài mới khi chưa có ảnh bìa riêng. */
+.vinylPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff4fb;
+  font: 24px 'VT323', monospace;
+  background:
+    repeating-radial-gradient(circle, #30263c 0 2px, #57426a 3px 4px, #30263c 5px 6px);
+}
