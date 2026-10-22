@@ -1,54 +1,138 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import {
+  formatTimelineDate,
+  getTimelineChapters,
+  TIMELINE_START_DATE,
+  TIMELINE_TOTAL_MONTHS,
+} from '../../apps/Timeline/timelineData';
 import styles from './AboutDialog.module.css';
 
-const CREATOR_NAME = 'Bibi'; // Tên
-const START_CODING_DATE = 'một đêm không ngủ được'; // Có thể đổi thành ngày cụ thể, VD '15/09/2025'
-const PERSONAL_MESSAGE = `Anh không giỏi nói mấy lời ngọt ngào, nên anh code hẳn 1 cái máy tính
-để nói thay anh vậy đó. Mỗi dòng code trong này đều có ít nhất 1% là
-nghĩ về em. Cảm ơn vì đã ở đây, đã đọc tới tận dòng cuối cùng này.
-Yêu em nhiều 💜`;
+const PHOTO_COUNT = getTimelineChapters().reduce(
+  (total, month) => total + month.albumPhotos.length,
+  0,
+);
+const SINCE_DATE = formatTimelineDate(TIMELINE_START_DATE).replaceAll('/', '.');
 
 const AboutDialog = ({ onClose }) => {
-  return (
-    <div className={styles.backdrop} onClick={onClose}>
-      <div className={styles.dialog} onClick={(e) => e.stopPropagation()}>
+  const dialogRef = useRef(null);
+  const closeButtonRef = useRef(null);
+
+  useEffect(() => {
+    const previousFocus = document.activeElement;
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        onClose();
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+      const buttons = dialogRef.current?.querySelectorAll('button:not(:disabled)');
+      if (!buttons?.length) return;
+      const first = buttons[0];
+      const last = buttons[buttons.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previousFocus?.focus?.();
+    };
+  }, [onClose]);
+
+  // Render ngoài Start Menu để hộp thoại không bị clip-path/overflow cắt mất.
+  return createPortal(
+    <div
+      className={styles.backdrop}
+      onClick={(event) => {
+        event.stopPropagation();
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <section
+        ref={dialogRef}
+        className={styles.dialog}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="about-os-title"
+        aria-describedby="about-os-note"
+      >
         <div className={styles.header}>
           <span>About BiBi-OS</span>
-          <button className={styles.closeBtn} onClick={onClose}>X</button>
+          <button
+            ref={closeButtonRef}
+            className={styles.closeBtn}
+            type="button"
+            onClick={onClose}
+            aria-label="Đóng About"
+          >
+            ×
+          </button>
         </div>
 
         <div className={styles.body}>
-          <div className={styles.logo}>💜</div>
-          <p className={styles.osName}>BiBi-OS</p>
-          <p className={styles.version}>Version 1.0.0 — "Nhi Edition"</p>
-
-          <div className={styles.specsBox}>
-            <div className={styles.specRow}>
-              <span className={styles.specLabel}>RAM:</span>
-              <span className={styles.specValue}>999GB kỷ niệm</span>
-            </div>
-            <div className={styles.specRow}>
-              <span className={styles.specLabel}>CPU:</span>
-              <span className={styles.specValue}>Trái tim @ 100% tình yêu</span>
-            </div>
-            <div className={styles.specRow}>
-              <span className={styles.specLabel}>Uptime:</span>
-              <span className={styles.specValue}>1 năm và vẫn đang chạy ổn định</span>
-            </div>
-            <div className={styles.specRow}>
-              <span className={styles.specLabel}>Khởi tạo lúc:</span>
-              <span className={styles.specValue}>{START_CODING_DATE}</span>
+          <div className={styles.identity}>
+            <div className={styles.logo} aria-hidden="true">♡</div>
+            <div className={styles.identityText}>
+              <h2 className={styles.osName} id="about-os-title">BiBi-OS</h2>
+              <p className={styles.version}>Version 1.0 · Nhi Edition</p>
+              <span className={styles.edition}>ONE YEAR ANNIVERSARY</span>
             </div>
           </div>
 
-          <p className={styles.personalMessage}>{PERSONAL_MESSAGE}</p>
+          <div className={styles.sectionHeading}>SYSTEM INFORMATION</div>
+          <dl className={styles.specsBox}>
+            <div className={styles.specRow}>
+              <dt>Created by</dt>
+              <dd>Bibi</dd>
+            </div>
+            <div className={styles.specRow}>
+              <dt>Made for</dt>
+              <dd>Nhi</dd>
+            </div>
+            <div className={styles.specRow}>
+              <dt>Since</dt>
+              <dd>{SINCE_DATE}</dd>
+            </div>
+            <div className={styles.specRow}>
+              <dt>Memories</dt>
+              <dd>{TIMELINE_TOTAL_MONTHS} chapters · {PHOTO_COUNT} photos</dd>
+            </div>
+            <div className={styles.specRow}>
+              <dt>Status</dt>
+              <dd className={styles.status}><span aria-hidden="true">♡</span> Still making memories</dd>
+            </div>
+          </dl>
 
-          <p className={styles.signature}>— {CREATOR_NAME}, người viết ra cái OS ngớ ngẩn này 💜</p>
+          <div className={styles.note} id="about-os-note">
+            <p className={styles.noteTitle}>A little note ♡</p>
+            <p>
+              Anh làm cái máy tính nhỏ này để giữ lại một vài điều của tụi mình.
+              Có ảnh, có nhạc, có mấy trò linh tinh, và cả những thứ anh chưa biết nói thế nào.
+            </p>
+            <p>Chúc mừng một năm của tụi mình nhé. ♡</p>
+            <p className={styles.signature}>- Bibi</p>
+          </div>
         </div>
 
-        <button className={styles.okBtn} onClick={onClose}>Đóng</button>
-      </div>
-    </div>
+        <div className={styles.footer}>
+          <button className={styles.okBtn} type="button" onClick={onClose}>OK</button>
+        </div>
+      </section>
+    </div>,
+    document.body,
   );
 };
 
