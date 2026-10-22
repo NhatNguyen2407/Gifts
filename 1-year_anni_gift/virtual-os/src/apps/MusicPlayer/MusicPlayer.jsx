@@ -24,7 +24,7 @@ import hereComesAudio from '../../assets/audio/herecomesathought.mp3';
 import loveLikeYouAudio from '../../assets/audio/lovelikeyou.mp3';
 
 // 3. Data Playlist
-const PLAYLIST = [
+const SIX_MONTHS_PLAYLIST = [
   { id: 's1', title: 'After Like', artist: 'IVE', cover: afterLikeImg, src: afterLikeAudio },
   { id: 's2', title: 'New Beginnings', artist: 'NEFFEX', cover: newBeginningsImg, src: newBeginningsAudio },
   { id: 's3', title: '好きだから', artist: 'ユイカ ft. れん', cover: sukidakaraImg, src: sukidakaraAudio },
@@ -32,6 +32,10 @@ const PLAYLIST = [
   { id: 's5', title: 'Here Comes A Thought', artist: 'Steven Universe', cover: hereComesImg, src: hereComesAudio },
   { id: 's6', title: 'Love Like You', artist: 'Steven Universe', cover: loveLikeYouImg, src: loveLikeYouAudio },
 ];
+
+// Các bài mới sẽ được thêm vào đây khi có file nhạc và cover.
+const NOW_PLAYLIST = [];
+const ALL_SONGS = [...SIX_MONTHS_PLAYLIST, ...NOW_PLAYLIST];
 
 const MusicPlayer = () => {
   const [activeTab, setActiveTab] = useState('shared');
@@ -129,38 +133,7 @@ const MusicPlayer = () => {
     setDurations((prev) => ({ ...prev, [songId]: e.target.duration }));
   };
 
-  return (
-    <div className={styles.container}>
-      {/* Thanh Tabs */}
-      <div className={styles.tabBar}>
-        <button 
-          className={`${styles.tabBtn} ${activeTab === 'shared' ? styles.active : ''}`}
-          onClick={() => setActiveTab('shared')}
-        >
-          ✨ Our Melody
-        </button>
-        <button 
-          className={`${styles.tabBtn} ${activeTab === 'past' ? styles.active : ''}`}
-          onClick={() => setActiveTab('past')}
-        >
-          🎧 Gu Nhạc Ngày Xưa
-        </button>
-      </div>
-
-      {/* Visualizer nhảy theo tần số âm thanh thực tế của bài đang phát */}
-      <div className={styles.visualizerWrap}>
-        <MusicVisualizer analyserNode={activeAnalyser} />
-      </div>
-
-      {/* melody*/}
-      {activeTab === 'shared' && (
-        <div className={styles.tabContent}>
-          <p className={styles.description}>
-            Cũng có, trong số đó, những giai điệu đặc biệt nữa đó... Những bài hát gợi nhớ đến em và những bài em thích nhất!
-          </p>
-          
-          <div className={styles.playlistGrid}>
-            {PLAYLIST.map((song) => (
+  const renderSongCard = (song) => (
               <button
                 type="button"
                 key={song.id}
@@ -198,14 +171,61 @@ const MusicPlayer = () => {
                   {playingId === song.id ? '⏸' : '▶'}
                 </div>
               </button>
-            ))}
-          </div>
+  );
+
+  return (
+    <div className={styles.container}>
+      {/* Thanh Tabs */}
+      <div className={styles.tabBar}>
+        <button 
+          className={`${styles.tabBtn} ${activeTab === 'shared' ? styles.active : ''}`}
+          onClick={() => setActiveTab('shared')}
+        >
+          ✨ Our Melody
+        </button>
+        <button 
+          className={`${styles.tabBtn} ${activeTab === 'past' ? styles.active : ''}`}
+          onClick={() => setActiveTab('past')}
+        >
+          🎧 Gu Nhạc Ngày Xưa
+        </button>
+      </div>
+
+      {/* Visualizer nhảy theo tần số âm thanh thực tế của bài đang phát */}
+      <div className={styles.visualizerWrap}>
+        <MusicVisualizer analyserNode={activeAnalyser} />
+      </div>
+
+      {/* melody*/}
+      {activeTab === 'shared' && (
+        <div className={styles.tabContent}>
+          <p className={styles.description}>
+            Cũng có, trong số đó, những giai điệu đặc biệt nữa đó... Những bài hát gợi nhớ đến em và những bài em thích nhất!
+          </p>
+
+          <section className={styles.musicSection} aria-labelledby="music-six-months">
+            <h3 className={styles.sectionHeading} id="music-six-months">6 tháng trước:</h3>
+            <div className={styles.playlistGrid}>
+              {SIX_MONTHS_PLAYLIST.map(renderSongCard)}
+            </div>
+          </section>
+
+          <section className={styles.musicSection} aria-labelledby="music-now">
+            <h3 className={styles.sectionHeading} id="music-now">Bây giờ:</h3>
+            {NOW_PLAYLIST.length > 0 ? (
+              <div className={styles.playlistGrid}>
+                {NOW_PLAYLIST.map(renderSongCard)}
+              </div>
+            ) : (
+              <p className={styles.emptyPlaylist}>Những bài nhạc mới của tụi mình sẽ được thêm vào đây ♡</p>
+            )}
+          </section>
         </div>
       )}
 
       {/* past */}
       <div hidden aria-hidden="true">
-        {PLAYLIST.map((song) => (
+        {ALL_SONGS.map((song) => (
           <audio
             key={song.id}
             ref={(el) => { audioRefs.current[song.id] = el; }}

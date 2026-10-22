@@ -1,157 +1,32 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  padding: 12px;
-  box-sizing: border-box;
-  background-color: #faf5fc;
-  overflow: hidden;
-}
 
-.statusBar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: 'VT323', monospace;
-  font-size: 16px;
-  color: #4a148c;
-  padding: 6px 12px;
-  background-color: #f3e5f5;
-  border: 2px solid #ce93d8;
-  margin-bottom: 10px;
-  flex-shrink: 0;
-  clip-path: polygon(
-    3px 0, calc(100% - 3px) 0,
-    100% 3px, 100% calc(100% - 3px),
-    calc(100% - 3px) 100%, 3px 100%,
-    0 calc(100% - 3px), 0 3px
-  );
-}
-
-.restartBtn {
-  font-family: 'VT323', monospace;
-  font-size: 14px;
-  background-color: #f48fb1;
-  color: white;
-  border: 2px solid #d81b60;
-  padding: 4px 12px;
-  cursor: pointer;
-  clip-path: polygon(
-    3px 0, calc(100% - 3px) 0,
-    100% 3px, 100% calc(100% - 3px),
-    calc(100% - 3px) 100%, 3px 100%,
-    0 calc(100% - 3px), 0 3px
-  );
-}
-
-.restartBtn:active {
-  transform: translate(1px, 1px);
-}
-
-/* Grid 4x4, co giãn theo cửa sổ - min-height: 0 để không tràn ra ngoài container flex */
-.grid {
-  flex: 1;
-  min-height: 0;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 8px;
-}
-
-.card {
-  position: relative;
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: url('../../assets/cursors/pointer-heart.svg') 2 2, pointer;
-  perspective: 600px;
-  width: 100%;
-  height: 100%;
-}
-
-.card:disabled {
-  cursor: default;
-}
-
-.cardInner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.4s;
-  transform-style: preserve-3d;
-}
-
-.card.faceUp .cardInner {
-  transform: rotateY(180deg);
-}
-
-.cardBack,
-.cardFront {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #4a148c;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-.cardBack {
-  background-color: #d1c4e9;
-  font-size: 22px;
-}
-
-.cardFront {
-  background-color: #ffffff;
-  transform: rotateY(180deg);
-}
-
-.cardImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* ===== Màn thắng ===== */
-.winScreen {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 12px;
-  padding: 20px;
-}
-
-.winTitle {
-  font-family: 'VT323', monospace;
-  font-size: 28px;
-  color: #ad1457;
-  margin: 0;
-}
-
-.winMessage {
-  font-family: 'Itim', cursive;
-  font-size: 16px;
-  color: #6a1b9a;
-  max-width: 320px;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.winStats {
-  font-family: 'VT323', monospace;
-  font-size: 14px;
-  color: #8e5ba1;
-  margin: 0;
-}
-
-/* Trên màn hình nhỏ, giảm gap để 4x4 vẫn vừa khít */
-@media (max-width: 480px) {
-  .grid { gap: 4px; }
-  .statusBar { font-size: 13px; padding: 4px 8px; }
-}
+.container { position: relative; display: flex; flex-direction: column; width: 100%; height: 100%; min-height: 0; box-sizing: border-box; padding: 12px; background: #faf5fc; overflow: hidden; }
+.statusBar { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; justify-content: space-between; flex: 0 0 auto; padding: 6px 9px; margin-bottom: 10px; border: 2px solid #ce93d8; background: #f3e5f5; color: #4a148c; font: 16px 'VT323', monospace; }
+.restartBtn, .modeBtn { border: 2px solid #b78acb; background: #fbe6f3; color: #673b82; padding: 5px 12px; font: 16px 'VT323', monospace; cursor: pointer; }
+.restartBtn:hover, .modeBtn:hover { background: #f4cfe5; border-color: #9760b0; }
+.restartBtn:focus-visible, .modeBtn:focus-visible, .card:focus-visible { outline: 3px solid #8556b5; outline-offset: 2px; }
+.gameArea { flex: 1; min-height: 0; overflow-y: auto; display: flex; align-items: flex-start; justify-content: center; }
+.grid { width: min(100%, 620px); display: grid; grid-template-columns: repeat(var(--card-columns), minmax(0, 1fr)); gap: 8px; padding: 2px; }
+.card { position: relative; padding: 0; min-width: 0; border: 0; background: none; aspect-ratio: 1 / 1; cursor: pointer; perspective: 600px; }
+.card:disabled { cursor: default; }
+.cardInner { display: block; position: relative; height: 100%; width: 100%; transform-style: preserve-3d; transition: transform .35s; }
+.card.faceUp .cardInner { transform: rotateY(180deg); }
+.cardBack, .cardFront { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; backface-visibility: hidden; border: 2px solid #73428d; overflow: hidden; }
+.cardBack { background: #d8c8e9; font-size: 22px; }
+.cardFront { transform: rotateY(180deg); background: white; }
+.cardImg { width: 100%; height: 100%; object-fit: cover; }
+.modeScreen { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 13px; }
+.modeTitle { margin: 0; font: 29px 'VT323', monospace; color: #743c92; }
+.modeScreen p { margin: 0; font: 15px 'Itim', sans-serif; color: #815d9b; }
+.modeList { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.modeBtn { display: flex; flex-direction: column; gap: 6px; align-items: center; min-width: 102px; padding: 13px; }
+.modeBtn strong { font-size: 23px; }
+.modeBtn span { font-size: 14px; }
+.modeScreen .achievementHint { font-size: 13px; max-width: 300px; }
+.popupBackdrop { position: absolute; z-index: 10; inset: 0; display: grid; place-items: center; padding: 12px; background: rgba(54,28,69,.65); }
+.popup { width: min(360px,100%); padding: 20px 15px; background: #fff9fd; border: 3px solid #d39dcf; box-shadow: 4px 4px 0 #ad86ba; text-align: center; }
+.winTitle { margin: 0 0 12px; color: #963c86; font: 27px 'VT323', monospace; }
+.winMessage { margin: 0 0 13px; color: #74418b; font: 18px 'Itim', sans-serif; }
+.winStats { margin: 0 0 16px; color: #9875a5; font: 15px 'VT323', monospace; }
+.popupActions { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 480px) { .grid { gap: 4px; } .statusBar { font-size: 14px; } .restartBtn { font-size: 14px; padding: 4px 7px; } }
+@media (prefers-reduced-motion: reduce) { .cardInner { transition: none; } }

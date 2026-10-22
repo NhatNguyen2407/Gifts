@@ -24,7 +24,7 @@ export const ACHIEVEMENTS = {
   open_quiz: { title: 'Kiểm tra độ hiểu nhau', description: 'Mở Quiz lần đầu tiên', icon: '❓', category: 'app' },
 
   // Hành động cụ thể (gọi unlock() thủ công tại đúng chỗ xảy ra)
-  memory_master: { title: 'Trí nhớ đỉnh cao', description: 'Thắng 1 ván Memory Match', icon: '🏆', category: 'action' },
+  memory_hard_master: { title: 'Trí nhớ đỉnh cao', description: 'Thắng Memory Match ở chế độ Khó', icon: '🏆', category: 'action' },
   terminal_whoami: { title: 'Tự nhận diện', description: 'Gõ lệnh "whoami" trong Terminal', icon: '🙋', category: 'action' },
   secret_finder: { title: 'Đào bới bí mật', description: 'Đọc "cat secret.txt" trong Terminal', icon: '🔍', category: 'action' },
   shutdown_egg: { title: 'Tắt máy an toàn', description: 'Dùng "Shut Down" trong menu chuột phải', icon: '⏻', category: 'action' },

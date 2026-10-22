@@ -8,7 +8,7 @@ const AchievementsContext = createContext(null);
 const loadUnlocked = () => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? new Set(JSON.parse(raw)) : new Set();
+    return raw ? new Set(JSON.parse(raw).filter((id) => Boolean(ACHIEVEMENTS[id]))) : new Set();
   } catch (e) {
     return new Set();
   }

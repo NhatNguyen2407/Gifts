@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './MemoryMatch.module.css';
 import { useSound } from '../../hooks/useSound';
 import { useAchievements } from '../../context/AchievementsContext';
-
 import us1 from '../../assets/images/us1.jpg';
 import us2 from '../../assets/images/us2.jpg';
 import us3 from '../../assets/images/us3.jpg';
@@ -12,132 +11,178 @@ import her2 from '../../assets/images/her2.jpg';
 import her3 from '../../assets/images/her3.jpg';
 import her4 from '../../assets/images/her4.jpg';
 
-// Dùng lại đúng bộ ảnh kỷ niệm đang có trong Gallery - mỗi ảnh xuất hiện 2 lần để ghép cặp
 const PHOTOS = [
-  { id: 'u1', src: us1 },
-  { id: 'u2', src: us2 },
-  { id: 'u3', src: us3 },
-  { id: 'u4', src: us4 },
-  { id: 'h1', src: her1 },
-  { id: 'h2', src: her2 },
-  { id: 'h3', src: her3 },
-  { id: 'h4', src: her4 },
+  { id: 'u1', src: us1 }, { id: 'u2', src: us2 },
+  { id: 'u3', src: us3 }, { id: 'u4', src: us4 },
+  { id: 'h1', src: her1 }, { id: 'h2', src: her2 },
+  { id: 'h3', src: her3 }, { id: 'h4', src: her4 },
 ];
+
+const MODES = {
+  easy: { label: 'Dễ', pairs: 3, maxMoves: 9, columns: 3 },
+  medium: { label: 'Vừa', pairs: 5, maxMoves: 16, columns: 5 },
+  hard: { label: 'Khó', pairs: 8, maxMoves: 28, columns: 4 },
+};
 
 const WIN_MESSAGE = 'Trí nhớ đỉnh vậy?? Chắc là vì mỗi khoảnh khắc với tui đều đáng nhớ hết trơn á 💜';
 
-// Xáo bài kiểu Fisher-Yates
-const shuffle = (arr) => {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
+const shuffle = (photos) => {
+  const copy = [...photos];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
+    [copy[i], copy[j]] = [copy[j], copy[i]];
   }
-  return a;
+  return copy;
 };
 
-const buildDeck = () => {
-  const doubled = [...PHOTOS, ...PHOTOS].map((p, idx) => ({
-    key: `${p.id}-${idx}`,
-    photoId: p.id,
-    src: p.src,
-  }));
-  return shuffle(doubled);
+const makeDeck = (mode) => {
+  const chosen = shuffle(PHOTOS).slice(0, MODES[mode].pairs);
+  return shuffle(chosen.flatMap((photo) => [
+    { key: `${photo.id}-a`, photoId: photo.id, src: photo.src },
+    { key: `${photo.id}-b`, photoId: photo.id, src: photo.src },
+  ]));
 };
 
-const MemoryMatch = () => {
-  const [deck, setDeck] = useState(buildDeck);
-  const [flipped, setFlipped] = useState([]); // Index các lá đang lật (tối đa 2)
-  const [matched, setMatched] = useState(new Set()); // key các lá đã ghép đúng
+const MemoryMatch = ({ onExit }) => {
+  const [mode, setMode] = useState(null);
+  const [deck, setDeck] = useState([]);
+  const [flipped, setFlipped] = useState([]);
+  const [matched, setMatched] = useState(new Set());
   const [moves, setMoves] = useState(0);
-  const [isLocked, setIsLocked] = useState(false); // Khoá click tạm khi đang so 2 lá
+  const [locked, setLocked] = useState(false);
+  const [outcome, setOutcome] = useState(null);
+  const pendingRef = useRef(null);
   const { playMatch, playWin } = useSound();
   const { unlock } = useAchievements();
 
-  const isWon = matched.size === deck.length;
-
-  const handleCardClick = (index) => {
-    if (isLocked || flipped.includes(index) || matched.has(deck[index].key) || flipped.length === 2) {
-      return;
-    }
-
-    const nextFlipped = [...flipped, index];
-    setFlipped(nextFlipped);
-
-    if (nextFlipped.length === 2) {
-      setIsLocked(true);
-      setMoves((m) => m + 1);
-      const [a, b] = nextFlipped;
-
-      if (deck[a].photoId === deck[b].photoId) {
-        // Ghép đúng: giữ ngửa, khoá lại vào danh sách matched
-        setTimeout(() => {
-          setMatched((prev) => new Set(prev).add(deck[a].key).add(deck[b].key));
-          setFlipped([]);
-          setIsLocked(false);
-          playMatch();
-        }, 350);
-      } else {
-        // Ghép sai: cho người chơi nhìn 1 nhịp rồi úp lại
-        setTimeout(() => {
-          setFlipped([]);
-          setIsLocked(false);
-        }, 800);
-      }
-    }
+  const clearPending = () => {
+    if (pendingRef.current) clearTimeout(pendingRef.current);
+    pendingRef.current = null;
   };
 
-  useEffect(() => {
-    if (isWon) {
-      playWin();
-      unlock('memory_master');
-    }
-  }, [isWon, playWin, unlock]);
+  useEffect(() => () => {
+    if (pendingRef.current) clearTimeout(pendingRef.current);
+  }, []);
 
-  const handleRestart = () => {
-    setDeck(buildDeck());
+  const startGame = (nextMode) => {
+    clearPending();
+    setMode(nextMode);
+    setDeck(makeDeck(nextMode));
     setFlipped([]);
     setMatched(new Set());
     setMoves(0);
-    setIsLocked(false);
+    setLocked(false);
+    setOutcome(null);
   };
+
+  const handleCardClick = (index) => {
+    if (!mode || outcome || locked || flipped.includes(index) || matched.has(deck[index].key)) return;
+    const nextFlipped = [...flipped, index];
+    setFlipped(nextFlipped);
+    if (nextFlipped.length !== 2) return;
+
+    setLocked(true);
+    const [a, b] = nextFlipped;
+    const correct = deck[a].photoId === deck[b].photoId;
+    const newMoves = moves + 1;
+    setMoves(newMoves);
+
+    pendingRef.current = setTimeout(() => {
+      pendingRef.current = null;
+      if (correct) {
+        const nextMatched = new Set(matched).add(deck[a].key).add(deck[b].key);
+        setMatched(nextMatched);
+        playMatch();
+        if (nextMatched.size === deck.length) {
+          setOutcome('won');
+          playWin();
+          if (mode === 'hard') unlock('memory_hard_master');
+        } else if (newMoves >= MODES[mode].maxMoves) {
+          setOutcome('lost');
+        }
+      } else if (newMoves >= MODES[mode].maxMoves) {
+        setOutcome('lost');
+      }
+      setFlipped([]);
+      setLocked(false);
+    }, correct ? 350 : 850);
+  };
+
+  const exitGame = () => {
+    clearPending();
+    setMode(null);
+    setOutcome(null);
+    setDeck([]);
+    setFlipped([]);
+    setMatched(new Set());
+    setMoves(0);
+    setLocked(false);
+  };
+
+  if (!mode) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.modeScreen}>
+          <h2 className={styles.modeTitle}>MEMORY MATCH ♡</h2>
+          <p>Chọn chế độ để bắt đầu ghép ảnh nè!</p>
+          <div className={styles.modeList}>
+            {Object.entries(MODES).map(([id, config]) => (
+              <button key={id} type="button" className={styles.modeBtn} onClick={() => startGame(id)}>
+                <strong>{config.label}</strong>
+                <span>{config.pairs} cặp ảnh · {config.maxMoves} lượt</span>
+              </button>
+            ))}
+          </div>
+          <p className={styles.achievementHint}>Hoàn thành mức Khó để nhận thành tựu Trí nhớ đỉnh cao.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.statusBar}>
-        <span>Lượt lật: {moves}</span>
-        <span>Đã ghép: {matched.size / 2}/{PHOTOS.length}</span>
-        <button className={styles.restartBtn} onClick={handleRestart}>↻ Chơi lại</button>
+        <span>{MODES[mode].label} · {moves}/{MODES[mode].maxMoves} lượt</span>
+        <span>{matched.size / 2}/{MODES[mode].pairs} cặp</span>
+        <button className={styles.restartBtn} type="button" onClick={() => startGame(mode)}>↻ Chơi lại</button>
+        <button className={styles.restartBtn} type="button" onClick={exitGame}>Đổi chế độ</button>
       </div>
 
-      {isWon ? (
-        <div className={styles.winScreen}>
-          <p className={styles.winTitle}>🎉 Hoàn thành! 🎉</p>
-          <p className={styles.winMessage}>{WIN_MESSAGE}</p>
-          <p className={styles.winStats}>Ghép xong trong {moves} lượt lật</p>
-          <button className={styles.restartBtn} onClick={handleRestart}>Chơi lại từ đầu</button>
-        </div>
-      ) : (
-        <div className={styles.grid}>
+      <div className={styles.gameArea}>
+        <div className={styles.grid} style={{ '--card-columns': MODES[mode].columns }}>
           {deck.map((card, index) => {
-            const isFaceUp = flipped.includes(index) || matched.has(card.key);
+            const faceUp = flipped.includes(index) || matched.has(card.key);
             return (
               <button
                 key={card.key}
-                className={`${styles.card} ${isFaceUp ? styles.faceUp : ''}`}
+                type="button"
+                className={`${styles.card} ${faceUp ? styles.faceUp : ''}`}
                 onClick={() => handleCardClick(index)}
-                disabled={isFaceUp}
-                aria-label="Lá bài kỷ niệm"
+                disabled={faceUp || locked || Boolean(outcome)}
+                aria-label={`Lá bài ${index + 1}${faceUp ? ', đang mở' : ', đang úp'}`}
               >
-                <div className={styles.cardInner}>
-                  <div className={styles.cardBack}>💜</div>
-                  <div className={styles.cardFront}>
-                    <img src={card.src} alt="" className={styles.cardImg} />
-                  </div>
-                </div>
+                <span className={styles.cardInner}>
+                  <span className={styles.cardBack} aria-hidden="true">💜</span>
+                  <span className={styles.cardFront}><img src={card.src} alt="" className={styles.cardImg} /></span>
+                </span>
               </button>
             );
           })}
+        </div>
+      </div>
+
+      {outcome && (
+        <div className={styles.popupBackdrop}>
+          <div className={styles.popup} role="dialog" aria-modal="true" aria-labelledby="memory-result">
+            <h2 id="memory-result" className={styles.winTitle}>{outcome === 'won' ? 'Hoàn thành!' : 'Hết lượt rồi!'}</h2>
+            <p className={styles.winMessage}>{outcome === 'won' ? WIN_MESSAGE : 'Nhinhi ngố kìaaaa <3'}</p>
+            <p className={styles.winStats}>{matched.size / 2}/{MODES[mode].pairs} cặp · {moves} lượt</p>
+            <div className={styles.popupActions}>
+              <button className={styles.restartBtn} type="button" onClick={() => startGame(mode)}>Chơi lại</button>
+              <button className={styles.restartBtn} type="button" onClick={exitGame}>Đổi chế độ</button>
+              <button className={styles.restartBtn} type="button" onClick={onExit || exitGame}>Thoát</button>
+            </div>
+          </div>
         </div>
       )}
     </div>
