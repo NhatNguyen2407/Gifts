@@ -65,7 +65,7 @@
 
 .tab {
   font-family: 'VT323', monospace;
-  font-size: 20px;
+  font-size: 16px;
   background-color: #ffffff;
   border: 3px solid #b39ddb;
   clip-path: polygon(
@@ -82,6 +82,8 @@
   gap: 8px;
   white-space: nowrap;
   max-width: 180px;
+  min-width: 0;
+  flex: 0 1 auto;
   box-shadow: 3px 3px 0px rgba(179, 157, 219, 0.5);
   transition: all 0.15s;
 }
@@ -101,6 +103,8 @@
   object-fit: contain;
   image-rendering: pixelated;
 }
+
+.tabTitle { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 
 /* SECTION BÊN PHẢI: SYSTEM TRAY NÂNG CẤP */
 .systemTray {
@@ -282,4 +286,10 @@
 
 .showDesktopBtn:hover {
   background-color: #ce93d8;
+}
+@media (max-width: 800px) {
+  .windowTabs { margin: 0 7px; gap: 5px; }
+  .tab { padding: 4px 7px; font-size: 15px; }
+  .tabIcon { width: 17px; height: 17px; flex-shrink: 0; }
+  .systemTray { padding: 4px 6px; gap: 5px; }
 }
