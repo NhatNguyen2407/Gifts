@@ -14,6 +14,11 @@ import sukidakaraImg from '../../assets/images/sukidakaracover.png';
 import escapismImg from '../../assets/images/Escapism_Singles_Cover.jpg';
 import hereComesImg from '../../assets/images/herecomesathought.jpg';
 import loveLikeYouImg from '../../assets/images/Love_Like_You.jpg';
+import choomImg from '../../assets/images/choom_image.webp';
+import animalsImg from '../../assets/images/animals.webp';
+import shitImg from '../../assets/images/shit_image.jpeg';
+import shioriImg from '../../assets/images/shiori_image.webp';
+import yeuEmTrongMoImg from '../../assets/images/yeuemtrongmo.webp';
 
 // 2. Import Nhạc
 import afterLikeAudio from '../../assets/audio/afterlike.mp3';
@@ -24,6 +29,9 @@ import hereComesAudio from '../../assets/audio/herecomesathought.mp3';
 import loveLikeYouAudio from '../../assets/audio/lovelikeyou.mp3';
 import shioriAudio from '../../assets/audio/shiori.mp3';
 import yeuEmTrongMoAudio from '../../assets/audio/yeu_em_trong_mo.mp3';
+import choomAudio from '../../assets/audio/choom.mp3';
+import animalsAudio from '../../assets/audio/animals.mp3';
+import shitAudio from '../../assets/audio/shit.mp3';
 
 // 3. Data Playlist
 const SIX_MONTHS_PLAYLIST = [
@@ -35,11 +43,14 @@ const SIX_MONTHS_PLAYLIST = [
   { id: 's6', title: 'Love Like You', artist: 'Steven Universe', cover: loveLikeYouImg, src: loveLikeYouAudio },
 ];
 
-// Hai bài được thêm từ commit add audio. Mốc gần chorus là ước lượng,
-// có thể thay previewRatio của từng bài sau khi nghe lại.
+// Đặt audio và cover cùng một chỗ để không nhầm cặp.
+// previewRatio chỉ là vị trí phát gần chorus ước lượng, chưa phải mốc xác minh.
 const NOW_PLAYLIST = [
-  { id: 'n1', title: 'Shiori', artist: '', cover: null, src: shioriAudio, previewRatio: 0.33 },
-  { id: 'n2', title: 'Yêu Em Trong Mơ', artist: '', cover: null, src: yeuEmTrongMoAudio, previewRatio: 0.33 },
+  { id: 'n1', title: 'Shiori', artist: '', cover: shioriImg, src: shioriAudio, previewRatio: 0.33 },
+  { id: 'n2', title: 'Yêu Em Trong Mơ', artist: '', cover: yeuEmTrongMoImg, src: yeuEmTrongMoAudio, previewRatio: 0.33 },
+  { id: 'n3', title: 'CHOOM', artist: '', cover: choomImg, src: choomAudio, previewRatio: 0.33 },
+  { id: 'n4', title: 'Animals', artist: '', cover: animalsImg, src: animalsAudio, previewRatio: 0.33 },
+  { id: 'n5', title: 'S.H.I.T (Sugar Honey Iced Tea)', artist: '', cover: shitImg, src: shitAudio, previewRatio: 0.33 },
 ];
 const ALL_SONGS = [...SIX_MONTHS_PLAYLIST, ...NOW_PLAYLIST];
 
