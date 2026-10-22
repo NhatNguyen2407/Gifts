@@ -5,10 +5,45 @@ import { formatTimelineDate, getTimelineChapters } from './timelineData';
 const chapters = getTimelineChapters();
 
 const Timeline = () => {
-  const [openMonth, setOpenMonth] = useState(1);
   const [viewer, setViewer] = useState(null);
+  const scrollRef = useRef(null);
   const openerRef = useRef(null);
   const closeRef = useRef(null);
+
+  useEffect(() => {
+    const scrollArea = scrollRef.current;
+    if (!scrollArea) return undefined;
+
+    const updateProgress = () => {
+      const distance = scrollArea.scrollHeight - scrollArea.clientHeight;
+      const progress = distance > 0 ? scrollArea.scrollTop / distance : 0;
+      scrollArea.style.setProperty('--story-progress', `${Math.min(100, Math.max(0, progress * 100))}%`);
+    };
+
+    updateProgress();
+    scrollArea.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress);
+
+    let observer;
+    if ('IntersectionObserver' in window) {
+      const entries = scrollArea.querySelectorAll('[data-story-month]');
+      observer = new IntersectionObserver((observations) => {
+        observations.forEach((item) => {
+          if (!item.isIntersecting) return;
+          item.target.classList.add(styles.revealed);
+          observer.unobserve(item.target);
+        });
+      }, { root: scrollArea, rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+      entries.forEach((entry) => observer.observe(entry));
+      scrollArea.classList.add(styles.motionEnabled);
+    }
+
+    return () => {
+      observer?.disconnect();
+      scrollArea.removeEventListener('scroll', updateProgress);
+      window.removeEventListener('resize', updateProgress);
+    };
+  }, []);
 
   const closeViewer = useCallback(() => {
     setViewer(null);
@@ -28,7 +63,6 @@ const Timeline = () => {
   const viewerOpen = viewer !== null;
   useEffect(() => {
     if (!viewerOpen) return undefined;
-
     closeRef.current?.focus();
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') closeViewer();
@@ -39,137 +73,99 @@ const Timeline = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [viewerOpen, closeViewer, changePhoto]);
 
-  const openPhoto = (eventData, index, clickEvent) => {
+  const openPhoto = (month, index, clickEvent) => {
     openerRef.current = clickEvent.currentTarget;
-    setViewer({ photos: eventData.photos, index, title: eventData.title });
+    setViewer({ photos: month.albumPhotos, index, title: month.title });
   };
 
-  const filledMonths = chapters.filter((month) => month.albumPhotos.length > 0 || month.events.length > 0).length;
+  const filledMonths = chapters.filter((month) => month.photoCount > 0).length;
   const activePhoto = viewer?.photos[viewer.index];
 
   return (
     <div className={styles.app}>
-      <div className={styles.scrollArea}>
-        <header className={styles.intro}>
-          <span className={styles.eyebrow}>♡ OUR LITTLE ARCHIVE · VOL. 01 ♡</span>
-          <h2 className={styles.heading}>12 tháng của chúng mình</h2>
-          <p className={styles.subtitle}>Một năm đầu tiên, lưu lại theo từng tháng yêu nhau.</p>
-          <div className={styles.introBottom}>
-            <span>24.10.2025 — 23.10.2026</span>
-            <span>{filledMonths}/12 tháng có ảnh</span>
+      <div className={styles.scrollArea} ref={scrollRef}>
+        <header className={styles.hero}>
+          <span className={styles.heroHearts} aria-hidden="true">♡ · ♡ · ♡</span>
+          <span className={styles.eyebrow}>OUR LITTLE STORY / VOL. 01</span>
+          <h2 className={styles.heroTitle}>12 tháng của chúng mình</h2>
+          <p className={styles.heroDescription}>
+            Một năm đầu tiên, được kể lại bằng những bức ảnh nhỏ.
+          </p>
+          <div className={styles.heroDates}>
+            <span>24.10.2025</span>
+            <span className={styles.dateConnector} aria-hidden="true">♡</span>
+            <span>24.10.2026</span>
           </div>
+          <span className={styles.scrollHint}>Cuộn xuống để xem từng chương ↓</span>
         </header>
 
-        <div className={styles.months}>
-          {chapters.map((month) => {
-            const expanded = openMonth === month.number;
-            const hasEvents = month.events.length > 0;
-            const hasPhotos = month.albumPhotos.length > 0;
-            const hasContent = hasEvents || hasPhotos;
-            return (
-              <section className={styles.monthEntry} key={month.number}>
-                <span className={`${styles.timelineDot} ${hasContent ? styles.activeDot : ''}`} aria-hidden="true" />
-                <div className={`${styles.monthCard} ${expanded ? styles.expanded : ''}`}>
-                  <button
-                    type="button"
-                    className={styles.monthToggle}
-                    aria-expanded={expanded}
-                    aria-controls={`timeline-month-${month.number}`}
-                    onClick={() => setOpenMonth((previous) => previous === month.number ? null : month.number)}
-                  >
-                    <span className={styles.monthIndex}>{String(month.number).padStart(2, '0')}</span>
-                    <span className={styles.monthInfo}>
-                      <span className={styles.monthName}>{month.title}</span>
-                      <span className={styles.monthDates}>
-                        {formatTimelineDate(month.startDate)} — {formatTimelineDate(month.endDate)}
-                      </span>
-                      <span className={styles.monthMeta}>
-                        {hasContent ? `${month.photoCount} ảnh` : 'Chưa có ảnh'}
-                      </span>
-                    </span>
-                    <span className={styles.chevron} aria-hidden="true">{expanded ? '−' : '+'}</span>
-                  </button>
+        <div className={styles.story} aria-label="12 mốc kỷ niệm theo tháng">
+          <div className={styles.timelineRail} aria-hidden="true">
+            <div className={styles.timelineProgress} />
+          </div>
 
-                  {expanded && (
-                    <div className={styles.monthContent} id={`timeline-month-${month.number}`}>
-                      <p className={styles.monthNote}>{month.note}</p>
-                      {hasPhotos && (
-                        <div className={styles.photoGrid}>
-                          {month.albumPhotos.map((photo, index) => (
-                            <button
-                              type="button"
-                              key={photo.src}
-                              className={styles.photoTile}
-                              onClick={(event) => openPhoto({
-                                photos: month.albumPhotos,
-                                title: month.title,
-                              }, index, event)}
-                              aria-label={`Xem ảnh ${index + 1} trong ${month.title}`}
-                            >
-                              <img src={photo.src} alt={photo.alt} loading="lazy" />
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                      {hasEvents ? (
-                        <div className={styles.events}>
-                          {month.events.map((eventData) => (
-                            <article key={eventData.id} className={styles.eventCard}>
-                              <div className={styles.eventHeader}>
-                                <time className={styles.eventDate} dateTime={eventData.date}>
-                                  {formatTimelineDate(eventData.date)}
-                                </time>
-                                {eventData.location && (
-                                  <span className={styles.location}>⌖ {eventData.location}</span>
-                                )}
-                              </div>
-                              <h3 className={styles.eventTitle}>{eventData.title}</h3>
-                              {eventData.description && (
-                                <p className={styles.description}>{eventData.description}</p>
-                              )}
+          {chapters.map((month, index) => (
+            <section
+              key={month.number}
+              data-story-month={month.number}
+              className={`${styles.storyEntry} ${index % 2 ? styles.onRight : styles.onLeft} ${index === 0 ? styles.revealed : ''}`}
+              aria-labelledby={`story-month-${month.number}`}
+            >
+              <div className={styles.monthMarker} aria-hidden="true">
+                <span>{String(month.number).padStart(2, '0')}</span>
+              </div>
 
-                              {eventData.photos?.length > 0 ? (
-                                <div className={styles.photoGrid}>
-                                  {eventData.photos.map((photo, index) => (
-                                    <button
-                                      type="button"
-                                      key={`${eventData.id}-photo-${index}`}
-                                      className={styles.photoTile}
-                                      onClick={(event) => openPhoto(eventData, index, event)}
-                                      aria-label={`Xem ảnh ${index + 1}: ${photo.caption || eventData.title}`}
-                                    >
-                                      <img
-                                        src={photo.src}
-                                        alt={photo.alt || photo.caption || eventData.title}
-                                        loading="lazy"
-                                      />
-                                      {photo.caption && (
-                                        <span className={styles.photoCaption}>{photo.caption}</span>
-                                      )}
-                                    </button>
-                                  ))}
-                                </div>
-                              ) : (
-                                <p className={styles.awaitingPhotos}>Ảnh của kỷ niệm này sẽ được thêm sau ♡</p>
-                              )}
-                            </article>
-                          ))}
-                        </div>
-                      ) : !hasPhotos ? (
-                        <div className={styles.emptyState}>
-                          <span className={styles.emptyHeart} aria-hidden="true">♡</span>
-                          <p>Chương này vẫn đang chờ ảnh và kỷ niệm của tụi mình.</p>
-                          <span>Rồi sẽ có những câu chuyện được viết vào đây.</span>
-                        </div>
-                      ) : null}
-                    </div>
-                  )}
+              <article className={styles.chapterCard}>
+                <div className={styles.chapterTop}>
+                  <span className={styles.chapterNumber}>CHAPTER {String(month.number).padStart(2, '0')}</span>
+                  <span className={styles.chapterHeart} aria-hidden="true">♡</span>
                 </div>
-              </section>
-            );
-          })}
+                <h3 className={styles.chapterTitle} id={`story-month-${month.number}`}>
+                  {month.title}
+                </h3>
+                <p className={styles.chapterDates}>
+                  {formatTimelineDate(month.startDate)} — {formatTimelineDate(month.endDate)}
+                </p>
+                <p className={styles.chapterNote}>{month.note}</p>
+
+                {month.albumPhotos.length > 0 ? (
+                  <div className={styles.collage}>
+                    {month.albumPhotos.map((photo, photoIndex) => (
+                      <button
+                        type="button"
+                        key={photo.src}
+                        className={styles.photoCard}
+                        style={{ '--photo-order': Math.min(photoIndex, 7) }}
+                        onClick={(event) => openPhoto(month, photoIndex, event)}
+                        aria-label={`Xem ảnh ${photoIndex + 1} của ${month.title}`}
+                      >
+                        <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" />
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className={styles.emptyAlbum}>
+                    <span aria-hidden="true">♡</span>
+                    <p>Chương này đang chờ những tấm ảnh của tụi mình.</p>
+                  </div>
+                )}
+
+                <div className={styles.chapterFooter}>
+                  <span>{month.photoCount > 0 ? `${month.photoCount} tấm ảnh` : 'Một trang còn trống'}</span>
+                  <span aria-hidden="true">✿</span>
+                </div>
+              </article>
+            </section>
+          ))}
         </div>
-        <p className={styles.footer}>To be continued... ♡</p>
+
+        <footer className={styles.ending}>
+          <span aria-hidden="true">♡</span>
+          <p>12 tháng — một cuốn album nhỏ.</p>
+          <strong>To be continued...</strong>
+          <span className={styles.endingDate}>24.10.2026</span>
+        </footer>
+        <span className={styles.srOnly}>{filledMonths} trong 12 tháng đã có ảnh.</span>
       </div>
 
       {viewer && activePhoto && (
