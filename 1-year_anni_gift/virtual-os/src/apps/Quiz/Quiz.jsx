@@ -24,8 +24,55 @@ const QUIZ_DATA = [
     feedbackCorrect: 'Chuẩn không cần chỉnh! 💜',
     feedbackWrong: 'Trật rồi nha, nhưng không sao, quan trọng là tụi mình gặp được nhau thôi.',
   },
-  // Add future questions only after verifying their answers.
-];
+  {
+    id: 2,
+    question: 'Lần đầu đi date tớ dẫn cậu i đâu zạ?',
+    options: ['Highlands Coffee', 'Kitsune Coffee', 'The Coffee House', 'Phúc Long'],
+    correctIndex: 1,
+    feedbackCorrect: 'Kitsune Coffee nè! Nhớ ghê đóoo 💜',
+    feedbackWrong: 'Hơi lệch rùi, là Kitsune Coffee đóoo.',
+  },
+  {
+    id: 3,
+    question: 'Cậu với tớ dạo này hay nói câu gì với nhau zạ?',
+    options: ['Hăm biết', 'Iu iu', 'Âu kây', 'e o'],
+    correctIndex: 3,
+    feedbackCorrect: 'e oooo! Đúng cái câu tụi mình hay nói lun xD',
+    feedbackWrong: 'Hỏng phải câu này rùi, là e o cơ :>',
+  },
+  {
+    id: 4,
+    question: 'Mỗi lần chủn bị đi đâu thì tớ sẽ nói gì zạ?',
+    options: ['Đi thuiii', 'Đợi tớ xíu', 'Đượt tưa - đi ná', 'Đi đâu zạ?'],
+    correctIndex: 2,
+    feedbackCorrect: 'Đượt tưa - đi ná! Chuẩn lun rồi đóo.',
+    feedbackWrong: 'Hông đúng câu cửa miệng của tớ rùiii :<',
+  },
+  {
+    id: 5,
+    question: 'Tớ với cậu có kỉ niệm gì đẹp nhất năm 2026?',
+    options: ['Đi Japannn', 'đi photobooth', 'đi trượt patin', 'đi ba vì'],
+    correctIndex: 0,
+    feedbackCorrect: 'Đi Japannn! Nhớ đúng kỉ niệm đặc biệt đó rùi 💜',
+    feedbackWrong: 'Những lần kia cũng đáng nhớ, nhưng câu này là Đi Japannn nha.',
+  },
+  {
+    id: 6,
+    question: 'Trướt khi iu nhao cậu đưa tớ i xem phim gì?',
+    options: ['Mai', 'Ngày xưa có một chuyện tình', 'Gió vẫn thổi', 'Lật mặt 7'],
+    correctIndex: 2,
+    feedbackCorrect: 'Gió vẫn thổi! Nhớ đúng tên phim rùi nè.',
+    feedbackWrong: 'Ôi nhớ nhầm phim rùi, là Gió vẫn thổi đóo.',
+  },
+  {
+    id: 7,
+    question: 'Điểm xấu của cậu nà gì?',
+    options: ['Hay quên đồ', 'Ngủ muộn :<', 'Lười ăn rau', 'Hay dỗi'],
+    correctIndex: 1,
+    feedbackCorrect: 'Ngủ muộn :< Nhớ ngủ sớm chút nhaaa.',
+    feedbackWrong: 'Hỏng phải rùi, là ngủ muộn đó. Ngủ sớm đi nàaa.',
+  },
+]
 
 const CLOSING_MESSAGE = 'Dù đúng hay sai bao nhiêu câu thì cũng không quan trọng bằng việc tụi mình đã cùng nhau tạo ra những kỷ niệm này. Cảm ơn vì đã ở đây 💜';
 
