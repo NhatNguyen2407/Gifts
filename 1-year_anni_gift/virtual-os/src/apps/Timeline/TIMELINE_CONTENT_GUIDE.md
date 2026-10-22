@@ -1,48 +1,23 @@
-# TIMELINE.EXE - cách bổ sung kỷ niệm
+# Timeline - 12 tháng album ảnh (Style B)
 
-**Phạm vi:** chỉ dự án `1-year_anni_gift/virtual-os`, không chỉnh website 6 tháng.
+- Timeline hiển thị tiêu đề tháng, một dòng note ngắn và lưới ảnh.
+- Không bắt buộc thêm sự kiện, địa điểm hay ngày cụ thể.
+- Tự động import ảnh `month-01/photo-01.jpg` ... `month-12/photo-YY.jpg` từ `src/assets/images/timeline`.
+- 53 ảnh Bro chọn được sắp trong gói `Gifts_1year_Timeline_StyleB.zip`.
+- Quy tắc Zalo: các ảnh **phía trên** tin nhắn "tháng X" được gán vào nhóm tháng X, kể cả 5 ảnh đầu trước dòng "tháng 10".
+- Album tháng 12 gom ảnh được chọn trong nhóm Zalo tháng 9 và 10/2026 để giữ 12 chương.
+- Do screenshot chỉ cung cấp nhóm tháng dương lịch mà không phải ngày chụp của từng ảnh, không nên hiểu nhóm ảnh là bằng chứng ảnh được chụp trong chính khoảng 24–23 của tháng yêu nhau.
+- Không đưa screenshot chat Zalo vào repo, chỉ thêm ảnh đã chọn.
 
-## Quy tắc phân chia tháng
-- Tháng thứ nhất: 24/10/2025 đến hết 23/11/2025.
-- Tháng thứ hai: 24/11/2025 đến hết 23/12/2025.
-- ...
-- Tháng thứ mười hai: 24/09/2026 đến hết 23/10/2026.
-- Ngày **24/10/2026** là kỷ niệm một năm, nằm ngoài mười hai chương này. Nếu muốn có chương riêng cho ngày tròn năm, ta sẽ bổ sung riêng.
+## Đưa ảnh vào repo
 
-## Thêm ảnh và nội dung
-1. Đặt ảnh vào `src/assets/images/timeline/` (tạo thư mục nếu chưa có).
-2. Mở `src/apps/Timeline/timelineData.js`.
-3. Import ảnh từ thư mục trên, ví dụ:
-   ```js
-   import photoA from '../../assets/images/timeline/photo-a.jpg';
-   import photoB from '../../assets/images/timeline/photo-b.jpg';
-   ```
-4. Thêm một phần tử vào `TIMELINE_EVENTS`:
-   ```js
-   {
-     id: 'event-unique-id',
-     date: '2025-11-02', // ngày chụp/đi chơi, dạng YYYY-MM-DD
-     title: 'Tên sự kiện',
-     location: 'Địa điểm nếu có',
-     description: 'Ghi chú hoặc câu chuyện ngắn',
-     photos: [
-       { src: photoA, caption: 'Chú thích ảnh A', alt: 'Mô tả ảnh A' },
-       { src: photoB, caption: 'Chú thích ảnh B', alt: 'Mô tả ảnh B' },
-     ],
-   },
-   ```
-5. Mỗi ngày có thể thêm nhiều sự kiện, mỗi sự kiện có thể chứa nhiều ảnh. Giao diện sẽ tự đưa sự kiện vào đúng tháng theo ngày.
-6. Sự kiện ngoài khoảng 24/10/2025-23/10/2026 sẽ không hiển thị trong 12 chương.
+1. Tải và giải nén `Gifts_1year_Timeline_StyleB.zip` vào **thư mục gốc repo Gifts** đang clone trên máy.
+2. Trong GitHub Desktop, kiểm tra chỉ có ảnh mới dưới `1-year_anni_gift/virtual-os/src/assets/images/timeline/month-XX/`.
+3. Commit và Push lên `main`.
+4. Đợi Vercel deploy; mở `TIMELINE.EXE` để xem album.
 
-**Lưu ý:** Đây là ví dụ về cấu trúc, không phải kỷ niệm thật. Ở thời điểm tạo giao diện, chỉ có mốc 24/10/2025 được giữ lại từ code cũ.
+## Kiểm tra
 
-## Cách kiểm tra
-Từ thư mục `1-year_anni_gift/virtual-os`:
-
-```bash
-npm install
-npm run lint
-npm run build
-```
-
-Mở TIMELINE.EXE; thử mở/đóng các tháng, cuộn trên màn hình nhỏ, nhấn vào ảnh để phóng to, chuyển ảnh bằng mũi tên và phím ← →, đóng bằng Escape. Các thao tác ảnh chỉ kiểm thử đầy đủ được khi đã thêm ảnh thật.
+- `npm run lint` và `npm run build` trong thư mục `1-year_anni_gift/virtual-os`.
+- Kiểm tra đủ 12 tháng, mở/đóng, xem ảnh phóng to, chuyển ảnh, phím Escape và màn hình nhỏ.
+- Lưu ý repo GitHub hiện công khai: cân nhắc quyền riêng tư trước khi đẩy ảnh cá nhân lên.
