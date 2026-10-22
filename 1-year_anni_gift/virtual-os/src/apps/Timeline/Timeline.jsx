@@ -44,7 +44,7 @@ const Timeline = () => {
     setViewer({ photos: eventData.photos, index, title: eventData.title });
   };
 
-  const filledMonths = chapters.filter((month) => month.events.length > 0).length;
+  const filledMonths = chapters.filter((month) => month.albumPhotos.length > 0 || month.events.length > 0).length;
   const activePhoto = viewer?.photos[viewer.index];
 
   return (
@@ -56,7 +56,7 @@ const Timeline = () => {
           <p className={styles.subtitle}>Một năm đầu tiên, lưu lại theo từng tháng yêu nhau.</p>
           <div className={styles.introBottom}>
             <span>24.10.2025 — 23.10.2026</span>
-            <span>{filledMonths}/12 tháng có kỷ niệm</span>
+            <span>{filledMonths}/12 tháng có ảnh</span>
           </div>
         </header>
 
@@ -64,9 +64,11 @@ const Timeline = () => {
           {chapters.map((month) => {
             const expanded = openMonth === month.number;
             const hasEvents = month.events.length > 0;
+            const hasPhotos = month.albumPhotos.length > 0;
+            const hasContent = hasEvents || hasPhotos;
             return (
               <section className={styles.monthEntry} key={month.number}>
-                <span className={`${styles.timelineDot} ${hasEvents ? styles.activeDot : ''}`} aria-hidden="true" />
+                <span className={`${styles.timelineDot} ${hasContent ? styles.activeDot : ''}`} aria-hidden="true" />
                 <div className={`${styles.monthCard} ${expanded ? styles.expanded : ''}`}>
                   <button
                     type="button"
@@ -82,9 +84,7 @@ const Timeline = () => {
                         {formatTimelineDate(month.startDate)} — {formatTimelineDate(month.endDate)}
                       </span>
                       <span className={styles.monthMeta}>
-                        {hasEvents
-                          ? `${month.events.length} kỷ niệm · ${month.photoCount} ảnh`
-                          : 'Chưa có kỷ niệm được thêm'}
+                        {hasContent ? `${month.photoCount} ảnh` : 'Chưa có ảnh'}
                       </span>
                     </span>
                     <span className={styles.chevron} aria-hidden="true">{expanded ? '−' : '+'}</span>
@@ -92,6 +92,25 @@ const Timeline = () => {
 
                   {expanded && (
                     <div className={styles.monthContent} id={`timeline-month-${month.number}`}>
+                      <p className={styles.monthNote}>{month.note}</p>
+                      {hasPhotos && (
+                        <div className={styles.photoGrid}>
+                          {month.albumPhotos.map((photo, index) => (
+                            <button
+                              type="button"
+                              key={photo.src}
+                              className={styles.photoTile}
+                              onClick={(event) => openPhoto({
+                                photos: month.albumPhotos,
+                                title: month.title,
+                              }, index, event)}
+                              aria-label={`Xem ảnh ${index + 1} trong ${month.title}`}
+                            >
+                              <img src={photo.src} alt={photo.alt} loading="lazy" />
+                            </button>
+                          ))}
+                        </div>
+                      )}
                       {hasEvents ? (
                         <div className={styles.events}>
                           {month.events.map((eventData) => (
@@ -136,13 +155,13 @@ const Timeline = () => {
                             </article>
                           ))}
                         </div>
-                      ) : (
+                      ) : !hasPhotos ? (
                         <div className={styles.emptyState}>
                           <span className={styles.emptyHeart} aria-hidden="true">♡</span>
                           <p>Chương này vẫn đang chờ ảnh và kỷ niệm của tụi mình.</p>
                           <span>Rồi sẽ có những câu chuyện được viết vào đây.</span>
                         </div>
-                      )}
+                      ) : null}
                     </div>
                   )}
                 </div>
