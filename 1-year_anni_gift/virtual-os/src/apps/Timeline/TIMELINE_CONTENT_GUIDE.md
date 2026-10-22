@@ -1,6 +1,6 @@
 # Timeline - 12 tháng album ảnh (Style B)
 
-- Timeline hiển thị tiêu đề tháng, một dòng note ngắn và lưới ảnh.
+- Timeline hiển thị đường thời gian dọc, 12 checkpoint. Mỗi tháng có tiêu đề, note ngắn và cụm ảnh collage. Cuộn xuống để ảnh và checkpoint xuất hiện lần lượt.
 - Không bắt buộc thêm sự kiện, địa điểm hay ngày cụ thể.
 - Tự động import ảnh `month-01/photo-01.jpg` ... `month-12/photo-YY.jpg` từ `src/assets/images/timeline`.
 - 53 ảnh Bro chọn được sắp trong gói `Gifts_1year_Timeline_StyleB.zip`.
@@ -19,5 +19,5 @@
 ## Kiểm tra
 
 - `npm run lint` và `npm run build` trong thư mục `1-year_anni_gift/virtual-os`.
-- Kiểm tra đủ 12 tháng, mở/đóng, xem ảnh phóng to, chuyển ảnh, phím Escape và màn hình nhỏ.
+- Kiểm tra đủ 12 tháng, cuộn xuống đủ 12 mark, hiệu ứng hiện ảnh, xem ảnh phóng to, chuyển ảnh, phím Escape và màn hình nhỏ. Thử cả chế độ giảm chuyển động trong hệ điều hành.
 - Lưu ý repo GitHub hiện công khai: cân nhắc quyền riêng tư trước khi đẩy ảnh cá nhân lên.
