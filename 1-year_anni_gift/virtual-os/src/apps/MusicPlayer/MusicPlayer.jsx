@@ -33,25 +33,104 @@ import choomAudio from '../../assets/audio/choom.mp3';
 import animalsAudio from '../../assets/audio/animals.mp3';
 import shitAudio from '../../assets/audio/shit.mp3';
 
-// 3. Data Playlist
+// Chỉnh thời điểm bắt đầu ngay tại previewSeconds của từng bài.
+// Ví dụ: previewSeconds: 75 nghĩa là bắt đầu phát từ 1 phút 15 giây.
+// Sáu bài cũ để 0 giây (giữ cách phát cũ); năm bài mới đặt tạm 60 giây.
+// Các mốc mới chỉ là ước lượng, có thể chỉnh theo chorus sau khi nghe thử.
 const SIX_MONTHS_PLAYLIST = [
-  { id: 's1', title: 'After Like', artist: 'IVE', cover: afterLikeImg, src: afterLikeAudio },
-  { id: 's2', title: 'New Beginnings', artist: 'NEFFEX', cover: newBeginningsImg, src: newBeginningsAudio },
-  { id: 's3', title: '好きだから', artist: 'ユイカ ft. れん', cover: sukidakaraImg, src: sukidakaraAudio },
-  { id: 's4', title: 'Escapism', artist: 'Steven Universe', cover: escapismImg, src: escapismAudio },
-  { id: 's5', title: 'Here Comes A Thought', artist: 'Steven Universe', cover: hereComesImg, src: hereComesAudio },
-  { id: 's6', title: 'Love Like You', artist: 'Steven Universe', cover: loveLikeYouImg, src: loveLikeYouAudio },
+  {
+    id: 's1',
+    title: 'After Like',
+    artist: 'IVE',
+    cover: afterLikeImg,
+    src: afterLikeAudio,
+    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
+  },
+  {
+    id: 's2',
+    title: 'New Beginnings',
+    artist: 'NEFFEX',
+    cover: newBeginningsImg,
+    src: newBeginningsAudio,
+    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
+  },
+  {
+    id: 's3',
+    title: '好きだから',
+    artist: 'ユイカ ft. れん',
+    cover: sukidakaraImg,
+    src: sukidakaraAudio,
+    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
+  },
+  {
+    id: 's4',
+    title: 'Escapism',
+    artist: 'Steven Universe',
+    cover: escapismImg,
+    src: escapismAudio,
+    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
+  },
+  {
+    id: 's5',
+    title: 'Here Comes A Thought',
+    artist: 'Steven Universe',
+    cover: hereComesImg,
+    src: hereComesAudio,
+    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
+  },
+  {
+    id: 's6',
+    title: 'Love Like You',
+    artist: 'Steven Universe',
+    cover: loveLikeYouImg,
+    src: loveLikeYouAudio,
+    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
+  }
 ];
 
-// Đặt audio và cover cùng một chỗ để không nhầm cặp.
-// previewRatio chỉ là vị trí phát gần chorus ước lượng, chưa phải mốc xác minh.
 const NOW_PLAYLIST = [
-  { id: 'n1', title: 'Shiori', artist: '', cover: shioriImg, src: shioriAudio, previewRatio: 0.33 },
-  { id: 'n2', title: 'Yêu Em Trong Mơ', artist: '', cover: yeuEmTrongMoImg, src: yeuEmTrongMoAudio, previewRatio: 0.33 },
-  { id: 'n3', title: 'CHOOM', artist: '', cover: choomImg, src: choomAudio, previewRatio: 0.33 },
-  { id: 'n4', title: 'Animals', artist: '', cover: animalsImg, src: animalsAudio, previewRatio: 0.33 },
-  { id: 'n5', title: 'S.H.I.T (Sugar Honey Iced Tea)', artist: '', cover: shitImg, src: shitAudio, previewRatio: 0.33 },
+  {
+    id: 'n1',
+    title: 'Shiori',
+    artist: '',
+    cover: shioriImg,
+    src: shioriAudio,
+    previewSeconds: 60, // Bắt đầu phát ở giây thứ 60
+  },
+  {
+    id: 'n2',
+    title: 'Yêu Em Trong Mơ',
+    artist: '',
+    cover: yeuEmTrongMoImg,
+    src: yeuEmTrongMoAudio,
+    previewSeconds: 60, // Bắt đầu phát ở giây thứ 60
+  },
+  {
+    id: 'n3',
+    title: 'CHOOM',
+    artist: '',
+    cover: choomImg,
+    src: choomAudio,
+    previewSeconds: 60, // Bắt đầu phát ở giây thứ 60
+  },
+  {
+    id: 'n4',
+    title: 'Animals',
+    artist: '',
+    cover: animalsImg,
+    src: animalsAudio,
+    previewSeconds: 60, // Bắt đầu phát ở giây thứ 60
+  },
+  {
+    id: 'n5',
+    title: 'S.H.I.T (Sugar Honey Iced Tea)',
+    artist: '',
+    cover: shitImg,
+    src: shitAudio,
+    previewSeconds: 60, // Bắt đầu phát ở giây thứ 60
+  }
 ];
+
 const ALL_SONGS = [...SIX_MONTHS_PLAYLIST, ...NOW_PLAYLIST];
 
 const MusicPlayer = () => {
@@ -99,16 +178,18 @@ const MusicPlayer = () => {
     }
   };
 
-  // Tua đến khoảng một phần ba bài cho nhạc mới (gần điệp khúc, chưa xác minh).
-  // Các bài thuộc playlist 6 tháng trước vẫn bắt đầu từ giây đầu tiên.
+  // Tua theo số giây trong playlist (áp dụng cho cả 11 bài).
   const seekToPreview = (songId, audio) => {
-    const song = NOW_PLAYLIST.find((item) => item.id === songId);
-    if (!song?.previewRatio || !Number.isFinite(audio.duration) || audio.duration <= 0) return;
-    const point = Math.max(0, Math.min(audio.duration - 10, Math.floor(audio.duration * song.previewRatio)));
+    const song = ALL_SONGS.find((item) => item.id === songId);
+    if (!song || !Number.isFinite(song.previewSeconds) || song.previewSeconds <= 0) return;
+    if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
+
+    // Nếu đặt giây quá dài, giữ ít nhất 10 giây cuối bài.
+    const point = Math.max(0, Math.min(song.previewSeconds, audio.duration - 10));
     if (audio.currentTime < 1 || audio.ended) {
       audio.currentTime = point;
       setPlayElapsed(point);
-      setPlayProgress(point / audio.duration * 100);
+      setPlayProgress((point / audio.duration) * 100);
     }
   };
 
