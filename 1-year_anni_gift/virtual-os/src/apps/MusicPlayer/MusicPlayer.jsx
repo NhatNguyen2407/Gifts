@@ -44,7 +44,7 @@ const SIX_MONTHS_PLAYLIST = [
     artist: 'IVE',
     cover: afterLikeImg,
     src: afterLikeAudio,
-    previewSeconds: 31, // Bắt đầu phát ở giây thứ 0
+    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
   },
   {
     id: 's2',
@@ -52,7 +52,7 @@ const SIX_MONTHS_PLAYLIST = [
     artist: 'NEFFEX',
     cover: newBeginningsImg,
     src: newBeginningsAudio,
-    previewSeconds: 42, // Bắt đầu phát ở giây thứ 0
+    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
   },
   {
     id: 's3',
@@ -60,7 +60,7 @@ const SIX_MONTHS_PLAYLIST = [
     artist: 'ユイカ ft. れん',
     cover: sukidakaraImg,
     src: sukidakaraAudio,
-    previewSeconds: 54, // Bắt đầu phát ở giây thứ 0
+    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
   },
   {
     id: 's4',
@@ -68,7 +68,7 @@ const SIX_MONTHS_PLAYLIST = [
     artist: 'Steven Universe',
     cover: escapismImg,
     src: escapismAudio,
-    previewSeconds: 50, // Bắt đầu phát ở giây thứ 0
+    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
   },
   {
     id: 's5',
@@ -84,7 +84,7 @@ const SIX_MONTHS_PLAYLIST = [
     artist: 'Steven Universe',
     cover: loveLikeYouImg,
     src: loveLikeYouAudio,
-    previewSeconds: 20, // Bắt đầu phát ở giây thứ 0
+    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
   }
 ];
 
