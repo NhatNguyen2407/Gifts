@@ -44,7 +44,7 @@ const SIX_MONTHS_PLAYLIST = [
     artist: 'IVE',
     cover: afterLikeImg,
     src: afterLikeAudio,
-    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
+    previewSeconds: 31, // Bắt đầu phát ở giây thứ 0
   },
   {
     id: 's2',
@@ -52,7 +52,7 @@ const SIX_MONTHS_PLAYLIST = [
     artist: 'NEFFEX',
     cover: newBeginningsImg,
     src: newBeginningsAudio,
-    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
+    previewSeconds: 42, // Bắt đầu phát ở giây thứ 0
   },
   {
     id: 's3',
@@ -60,7 +60,7 @@ const SIX_MONTHS_PLAYLIST = [
     artist: 'ユイカ ft. れん',
     cover: sukidakaraImg,
     src: sukidakaraAudio,
-    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
+    previewSeconds: 54, // Bắt đầu phát ở giây thứ 0
   },
   {
     id: 's4',
@@ -68,7 +68,7 @@ const SIX_MONTHS_PLAYLIST = [
     artist: 'Steven Universe',
     cover: escapismImg,
     src: escapismAudio,
-    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
+    previewSeconds: 50, // Bắt đầu phát ở giây thứ 0
   },
   {
     id: 's5',
@@ -84,7 +84,7 @@ const SIX_MONTHS_PLAYLIST = [
     artist: 'Steven Universe',
     cover: loveLikeYouImg,
     src: loveLikeYouAudio,
-    previewSeconds: 0, // Bắt đầu phát ở giây thứ 0
+    previewSeconds: 20, // Bắt đầu phát ở giây thứ 0
   }
 ];
 
@@ -95,7 +95,7 @@ const NOW_PLAYLIST = [
     artist: '',
     cover: shioriImg,
     src: shioriAudio,
-    previewSeconds: 60, // Bắt đầu phát ở giây thứ 60
+    previewSeconds: 33, // Bắt đầu phát ở giây thứ 60
   },
   {
     id: 'n2',
@@ -103,7 +103,7 @@ const NOW_PLAYLIST = [
     artist: '',
     cover: yeuEmTrongMoImg,
     src: yeuEmTrongMoAudio,
-    previewSeconds: 60, // Bắt đầu phát ở giây thứ 60
+    previewSeconds: 64, // Bắt đầu phát ở giây thứ 60
   },
   {
     id: 'n3',
@@ -111,7 +111,7 @@ const NOW_PLAYLIST = [
     artist: '',
     cover: choomImg,
     src: choomAudio,
-    previewSeconds: 60, // Bắt đầu phát ở giây thứ 60
+    previewSeconds: 50, // Bắt đầu phát ở giây thứ 60
   },
   {
     id: 'n4',
@@ -119,7 +119,7 @@ const NOW_PLAYLIST = [
     artist: '',
     cover: animalsImg,
     src: animalsAudio,
-    previewSeconds: 60, // Bắt đầu phát ở giây thứ 60
+    previewSeconds: 0, // Bắt đầu phát ở giây thứ 60
   },
   {
     id: 'n5',
@@ -127,7 +127,7 @@ const NOW_PLAYLIST = [
     artist: '',
     cover: shitImg,
     src: shitAudio,
-    previewSeconds: 60, // Bắt đầu phát ở giây thứ 60
+    previewSeconds: 40, // Bắt đầu phát ở giây thứ 60
   }
 ];
 
