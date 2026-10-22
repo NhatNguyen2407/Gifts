@@ -24,23 +24,7 @@ const QUIZ_DATA = [
     feedbackCorrect: 'Chuẩn không cần chỉnh! 💜',
     feedbackWrong: 'Trật rồi nha, nhưng không sao, quan trọng là tụi mình gặp được nhau thôi.',
   },
-  {
-    id: 2,
-    question: 'Món ăn tui thích nhất là gì?',
-    options: ['Đáp án A', 'Đáp án B', 'Đáp án C', 'Đáp án D'],
-    correctIndex: 1,
-    feedbackCorrect: 'Đúng đó! Hiểu tui ghê 😌',
-    feedbackWrong: 'Sai rồi, để tui nhắc lại cho nhớ nè hehe.',
-  },
-  {
-    id: 3,
-    question: 'Kỷ niệm nào tui hay nhắc nhất?',
-    options: ['Đáp án A', 'Đáp án B', 'Đáp án C', 'Đáp án D'],
-    correctIndex: 2,
-    feedbackCorrect: 'Yes! Kỷ niệm đó đáng nhớ thiệt.',
-    feedbackWrong: 'Không phải đâu, nhưng cảm ơn vì đã cố nhớ nha.',
-  },
-  // add q if want
+  // Add future questions only after verifying their answers.
 ];
 
 const CLOSING_MESSAGE = 'Dù đúng hay sai bao nhiêu câu thì cũng không quan trọng bằng việc tụi mình đã cùng nhau tạo ra những kỷ niệm này. Cảm ơn vì đã ở đây 💜';

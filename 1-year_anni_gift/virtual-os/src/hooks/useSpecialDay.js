@@ -11,6 +11,11 @@ export const useSpecialDay = () => {
 
     const match = SPECIAL_DATES.find((d) => d.month === todayMonth && d.day === todayDate);
     setSpecialDay(match || null);
+    const timer = setInterval(() => {
+      const date = new Date();
+      setSpecialDay(SPECIAL_DATES.find((d) => d.month === date.getMonth() + 1 && d.day === date.getDate()) || null);
+    }, 60000);
+    return () => clearInterval(timer);
   }, []);
 
   return specialDay;

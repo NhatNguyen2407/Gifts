@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './Gallery.module.css';
+import { getTimelineChapters } from '../Timeline/timelineData';
 
 // 1. Import toàn bộ ảnh từ thư mục assets
 import us1 from '../../assets/images/us1.jpg';
@@ -18,7 +19,7 @@ import nya2 from '../../assets/images/nyabati2.jpg';
 import pNya1 from '../../assets/images/pyabati.jpg';
 import pNya2 from '../../assets/images/pyabati2.jpg';
 
-// 2. Data Ảnh lấy từ project 6 tháng của bro
+// Các ảnh Our Moments hiện tại được giữ nguyên, kể cả caption.
 const MOMENTS_DATA = [
   { id: 'u1', src: us1, caption: 'Biếc hun nhau he' },
   { id: 'u2', src: us2, caption: 'Cũn gọi là cóa đi chộp ảnh Tết he' },
@@ -39,7 +40,32 @@ const PETS_DATA = [
   { id: 'pn2', src: pNya2, caption: '2 em này Loafu Loafu.', tag: '2 Đứa' }
 ];
 
+// Timeline và Gallery dùng chung một nguồn ảnh, không cần import lại từng tấm.
+const TIMELINE_MOMENTS = getTimelineChapters().flatMap((chapter) =>
+  chapter.albumPhotos.map((photo, index) => ({
+    id: `year-${chapter.number}-${index}`,
+    src: photo.src,
+    alt: photo.alt,
+  })),
+);
+
+const ALL_MOMENTS = [...MOMENTS_DATA, ...TIMELINE_MOMENTS];
+
+// Trộn bản sao của mảng để không đổi thứ tự ảnh trong Timeline.
+const shufflePhotos = (photos) => {
+  const shuffled = [...photos];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+  }
+  return shuffled;
+};
+
 const Gallery = () => {
+  // Khi đóng rồi mở Gallery, app tạo lại component và trộn thứ tự mới.
+  // Thu nhỏ cửa sổ hoặc đổi thư mục thì không làm ảnh nhảy vị trí.
+  const [moments] = useState(() => shufflePhotos(ALL_MOMENTS));
+  const [pets] = useState(() => shufflePhotos(PETS_DATA));
   const [activeTab, setActiveTab] = useState('moments');
   const [selectedImg, setSelectedImg] = useState(null); // Để phóng to ảnh
 
@@ -70,22 +96,22 @@ const Gallery = () => {
         </div>
 
         <div className={styles.imageGrid}>
-          {activeTab === 'moments' && MOMENTS_DATA.map((img) => (
+          {activeTab === 'moments' && moments.map((img) => (
             <div key={img.id} className={styles.imageCard} onClick={() => setSelectedImg(img)}>
               <div className={styles.imgWrapper}>
-                <img src={img.src} alt="Kỷ niệm" />
+                <img src={img.src} alt={img.alt || img.caption || "Kỷ niệm"} loading="lazy" />
               </div>
-              <p className={styles.caption}>{img.caption}</p>
+              {img.caption && <p className={styles.caption}>{img.caption}</p>}
             </div>
           ))}
 
-          {activeTab === 'pets' && PETS_DATA.map((img) => (
+          {activeTab === 'pets' && pets.map((img) => (
             <div key={img.id} className={styles.imageCard} onClick={() => setSelectedImg(img)}>
               <div className={styles.imgWrapper}>
-                <img src={img.src} alt="Pet" />
+                <img src={img.src} alt={img.alt || img.caption || "Pet"} loading="lazy" />
               </div>
               <div className={styles.tag}>{img.tag}</div>
-              <p className={styles.caption}>{img.caption}</p>
+              {img.caption && <p className={styles.caption}>{img.caption}</p>}
             </div>
           ))}
         </div>
@@ -97,7 +123,7 @@ const Gallery = () => {
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <button className={styles.closeBtn} onClick={() => setSelectedImg(null)}>✕</button>
             <img src={selectedImg.src} alt="Phóng to" className={styles.fullImg} />
-            <p className={styles.fullCaption}>{selectedImg.caption}</p>
+            {selectedImg.caption && <p className={styles.fullCaption}>{selectedImg.caption}</p>}
           </div>
         </div>
       )}

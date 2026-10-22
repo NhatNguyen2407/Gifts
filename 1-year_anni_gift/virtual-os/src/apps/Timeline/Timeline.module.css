@@ -1,102 +1,241 @@
-.container {
+.app {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  color: #57316e;
+  background: #fff8fc;
+  font-family: 'Itim', 'Segoe UI', sans-serif;
+}
+.scrollArea {
+  --story-progress: 0%;
+  position: relative;
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  box-sizing: border-box;
-  padding: 24px 20px 24px 34px;
-  background-color: #faf5fc;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-color: #cca0d7 #faedf8;
 }
-
-/* Mỗi mốc có border-left riêng, các đoạn xếp chồng liền nhau tạo thành 1 đường dọc liên tục -
-   cách này không cần tính chiều cao tổng bằng tay, tự động khớp với nội dung dài/ngắn khác nhau */
-.entry {
-  position: relative;
-  padding-left: 26px;
-  padding-bottom: 28px;
-  border-left: 3px solid #ce93d8;
+.scrollArea::-webkit-scrollbar { width: 8px; }
+.scrollArea::-webkit-scrollbar-thumb { background: #cca0d7; }
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 45px 20px 46px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 16% 30%, #f9dfec 0, transparent 43%),
+    radial-gradient(ellipse at 85% 25%, #e9ddfa 0, transparent 42%),
+    #fff9fd;
+  border-bottom: 1px solid #f0deec;
 }
-
-.entry:last-child {
-  border-left: 3px solid transparent; /* Ẩn đoạn thừa phía dưới mốc cuối cùng */
-  padding-bottom: 0;
-}
-
-.dot {
-  position: absolute;
-  left: -9px;
-  top: 2px;
-  width: 14px;
-  height: 14px;
-  background-color: #ab47bc;
-  border: 2px solid #4a148c;
-  box-sizing: border-box;
-  clip-path: polygon(
-    3px 0, calc(100% - 3px) 0,
-    100% 3px, 100% calc(100% - 3px),
-    calc(100% - 3px) 100%, 3px 100%,
-    0 calc(100% - 3px), 0 3px
-  );
-}
-
-.card {
-  background-color: #ffffff;
-  border: 2px solid #e1bee7;
-  padding: 10px 14px 12px;
-  box-shadow: 3px 3px 0px rgba(206, 147, 216, 0.3);
-  clip-path: polygon(
-    3px 0, calc(100% - 3px) 0,
-    100% 3px, 100% calc(100% - 3px),
-    calc(100% - 3px) 100%, 3px 100%,
-    0 calc(100% - 3px), 0 3px
-  );
-}
-
-.date {
-  font-family: 'VT323', monospace;
-  font-size: 14px;
-  color: #ab47bc;
-  margin: 0 0 4px;
-  letter-spacing: 0.5px;
-}
-
-.title {
-  font-family: 'Itim', cursive;
-  font-size: 17px;
-  color: #4a148c;
-  margin: 0 0 8px;
-}
-
-.image {
-  display: block;
-  width: 100%;
-  max-height: 220px;
-  object-fit: cover;
-  border: 2px solid #e1bee7;
-  margin-bottom: 8px;
-}
-
-.description {
-  font-family: 'Itim', cursive;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #6a1b9a;
+.heroHearts { color: #c686b6; letter-spacing: 7px; font-size: 21px; }
+.eyebrow { font: 16px 'VT323', monospace; color: #a782b0; letter-spacing: 2px; }
+.heroTitle {
   margin: 0;
+  font-size: clamp(25px, 4vw, 36px);
+  font-weight: normal;
+  line-height: 1.25;
+  color: #7d4c83;
 }
+.heroDescription { max-width: 320px; margin: 0; color: #987b9f; line-height: 1.6; }
+.heroDates { display: flex; align-items: center; gap: 22px; color: #8d609a; font: 18px 'VT323', monospace; }
+.dateConnector { color: #d183b1; }
+.scrollHint { margin-top: 8px; color: #a381aa; font: 16px 'VT323', monospace; }
 
-/* Thanh cuộn pixel vuông, đồng bộ với các app khác trong OS */
-.container::-webkit-scrollbar {
-  width: 8px;
+.story {
+  position: relative;
+  margin: 0 auto;
+  padding: 52px 20px 34px;
+  max-width: 1080px;
 }
-.container::-webkit-scrollbar-track {
-  background: #f0e0f5;
+.timelineRail {
+  position: absolute;
+  z-index: 0;
+  top: 25px;
+  bottom: 20px;
+  left: 50%;
+  width: 3px;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(to bottom, #e4c5e3 0 10px, #f9ebf6 10px 18px);
 }
-.container::-webkit-scrollbar-thumb {
-  background-color: #ce93d8;
-  border: 0;
+.timelineProgress {
+  width: 100%;
+  height: var(--story-progress);
+  max-height: 100%;
+  background: linear-gradient(#d295ba, #aa8bc9, #f1a4c7);
+  transition: height 120ms linear;
 }
+.storyEntry {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
+  align-items: start;
+  min-height: 140px;
+  margin-bottom: 44px;
+}
+.monthMarker {
+  grid-column: 2;
+  grid-row: 1;
+  z-index: 2;
+  width: 47px;
+  height: 47px;
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  background: #fff4fb;
+  border: 3px solid #d3a0cf;
+  color: #995ea0;
+  font: 22px 'VT323', monospace;
+  box-shadow: 0 0 0 6px #fff8fc;
+  transform: rotate(45deg);
+}
+.monthMarker span { transform: rotate(-45deg); }
+.chapterCard {
+  position: relative;
+  grid-row: 1;
+  min-width: 0;
+  padding: 16px;
+  background: #fff;
+  border: 2px solid #ebd7eb;
+  box-shadow: 4px 5px 0 #f1e2f0;
+}
+.chapterCard::before {
+  content: '';
+  position: absolute;
+  top: 23px;
+  width: 18px;
+  height: 2px;
+  background: #dcb6d8;
+}
+.onLeft .chapterCard { grid-column: 1; }
+.onLeft .chapterCard::before { right: -20px; }
+.onRight .chapterCard { grid-column: 3; }
+.onRight .chapterCard::before { left: -20px; }
+.chapterTop { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.chapterNumber { color: #ac89ae; font: 16px 'VT323', monospace; letter-spacing: 1.5px; }
+.chapterHeart { font-size: 23px; line-height: 1; color: #db95b6; }
+.chapterTitle { margin: 6px 0 2px; color: #83548e; font-size: 24px; font-weight: normal; }
+.chapterDates { margin: 0; font: 16px 'VT323', monospace; color: #aa8aac; }
+.chapterNote { margin: 12px 0 13px; font-size: 14px; color: #987b9f; line-height: 1.5; }
 
+.collage {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  align-items: stretch;
+}
+.photoCard {
+  appearance: none;
+  display: block;
+  min-width: 0;
+  width: 100%;
+  padding: 5px;
+  background: #fffafc;
+  border: 1px solid #ebd8e8;
+  box-shadow: 1px 2px 0 #f1e5ee;
+  cursor: pointer;
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+.photoCard:first-child { grid-column: 1 / -1; }
+.photoCard img { display: block; width: 100%; height: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+.photoCard:first-child img { aspect-ratio: 4 / 3; }
+.photoCard:hover { transform: translateY(-3px) rotate(-1deg); box-shadow: 3px 5px 0 #ead2e7; }
+.photoCard:focus-visible, .viewerArrow:focus-visible, .viewerClose:focus-visible { outline: 3px solid #8c5eb0; outline-offset: 3px; }
+.emptyAlbum { padding: 22px 10px; border: 1px dashed #eacde5; text-align: center; color: #ad90b3; }
+.emptyAlbum span { font-size: 32px; }
+.emptyAlbum p { margin: 5px 0; font-size: 14px; }
+.chapterFooter { display: flex; justify-content: space-between; margin-top: 13px; color: #b58db3; font: 16px 'VT323', monospace; }
+
+.motionEnabled .storyEntry:not(.revealed) .chapterCard {
+  opacity: 0;
+  transform: translateY(34px);
+}
+.motionEnabled .storyEntry.revealed .chapterCard { animation: revealChapter 750ms cubic-bezier(.18,.75,.24,1) both; }
+.motionEnabled .storyEntry.revealed .photoCard { animation: revealPhoto 550ms ease-out both; animation-delay: calc(var(--photo-order) * 65ms + 170ms); }
+@keyframes revealChapter { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes revealPhoto { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.ending {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding: 26px 16px 46px;
+  text-align: center;
+  color: #9b7da4;
+  background: linear-gradient(#fff8fc, #fbe9f5);
+}
+.ending > span:first-child { font-size: 36px; color: #cf94b6; }
+.ending p { margin: 0; }
+.ending strong { font-size: 26px; font-weight: normal; color: #8b598d; }
+.endingDate { font: 17px 'VT323', monospace; letter-spacing: 2px; }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+
+.lightboxBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  background: rgba(42, 19, 55, .84);
+  padding: 12px;
+}
+.lightbox {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  background: #fff;
+  border: 3px solid #b88bcb;
+  padding: 10px;
+  gap: 10px;
+}
+.viewerHeader { display: flex; align-items: center; justify-content: space-between; gap: 10px; font: 17px 'VT323', monospace; }
+.viewerClose, .viewerArrow {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  background: #f6e9fa;
+  border: 2px solid #be94d0;
+  color: #613079;
+  cursor: pointer;
+}
+.viewerClose { width: 30px; height: 30px; font-size: 22px; }
+.viewerArrow { width: 30px; height: 40px; font: 28px 'VT323', monospace; }
+.viewerBody { display: flex; align-items: center; justify-content: center; gap: 5px; min-width: 0; min-height: 0; }
+.viewerImage { display: block; max-width: calc(100% - 72px); max-height: min(58vh, 360px); object-fit: contain; min-width: 0; }
+.viewerCaption { text-align: center; margin: 0; overflow-wrap: anywhere; font-size: 14px; }
+
+
+@media (max-width: 850px) {
+  .story { padding: 34px 13px 10px 48px; }
+  .timelineRail { left: 25px; }
+  .storyEntry { display: block; margin-bottom: 29px; }
+  .monthMarker { position: absolute; left: -46px; top: 13px; width: 34px; height: 34px; font-size: 18px; }
+  .chapterCard { width: 100%; padding: 14px; }
+  .chapterCard::before { left: -15px !important; right: auto !important; top: 27px; width: 14px; }
+}
 @media (max-width: 480px) {
-  .container { padding: 16px 12px 16px 26px; }
-  .title { font-size: 15px; }
-  .description { font-size: 13px; }
+  .hero { padding: 33px 12px; }
+  .heroDates { gap: 12px; }
+  .story { padding-left: 42px; padding-right: 8px; }
+  .timelineRail { left: 20px; }
+  .monthMarker { left: -36px; width: 28px; height: 28px; border-width: 2px; font-size: 16px; }
+  .chapterCard { padding: 10px; }
+  .chapterTitle { font-size: 21px; }
+  .collage { gap: 5px; }
+  .photoCard { padding: 3px; }
+  .viewerArrow { width: 24px; }
+  .viewerImage { max-width: calc(100% - 58px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .motionEnabled .storyEntry:not(.revealed) .chapterCard { opacity: 1; transform: none; }
+  .motionEnabled .storyEntry.revealed .chapterCard,
+  .motionEnabled .storyEntry.revealed .photoCard { animation: none !important; }
+  .timelineProgress, .photoCard { transition: none; }
 }
