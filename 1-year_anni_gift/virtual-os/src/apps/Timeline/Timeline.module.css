@@ -214,3 +214,15 @@
 @media (prefers-reduced-motion: reduce) {
   .photoTile, .monthToggle { transition: none; }
 }
+
+/* Monthly photo album - title, short note, and photo grid. */
+.monthNote {
+  margin: 12px 0 4px;
+  font: 14px 'Itim', sans-serif;
+  color: #946da1;
+}
+.monthContent > .photoGrid { margin-top: 9px; }
+.monthContent > .photoGrid .photoTile img {
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
