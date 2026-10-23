@@ -36,7 +36,7 @@
     left: auto !important;
     top: auto !important;
     min-width: 0;
-    width: 100%;
+    width: 100% !important;
     touch-action: pan-y;
   }
 }

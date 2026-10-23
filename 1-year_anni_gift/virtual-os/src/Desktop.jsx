@@ -196,15 +196,15 @@ const Desktop = () => {
       <div className={styles.desktopShell}>
         <div className={styles.desktopIcons}>
           {APPS.map((app, index) => (
-        <DesktopIcon 
-          key={app.id}
-          id={app.id}
-          iconSrc={app.icon} 
-          title={app.title}
-          initialPosition={{ x: 20 + Math.floor(index / desktopRows) * 136, y: 20 + (index % desktopRows) * 112 }}
-          onDoubleClick={() => handleOpenApp(app.id)} 
-          isRefreshing={isRefreshing}
-        />
+            <DesktopIcon
+              key={app.id}
+              id={app.id}
+              iconSrc={app.icon}
+              title={app.title}
+              initialPosition={{ x: 20 + Math.floor(index / desktopRows) * 136, y: 20 + (index % desktopRows) * 112 }}
+              onDoubleClick={() => handleOpenApp(app.id)}
+              isRefreshing={isRefreshing}
+            />
           ))}
         </div>
         <div className={styles.desktopWidgets}>
