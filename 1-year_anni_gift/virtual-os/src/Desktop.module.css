@@ -1,7 +1,6 @@
 .desktopShell {
   position: absolute;
   inset: 0 0 var(--taskbar-height);
-  z-index: 1;
   pointer-events: none;
 }
 .desktopIcons { position: absolute; inset: 0; pointer-events: none; }
