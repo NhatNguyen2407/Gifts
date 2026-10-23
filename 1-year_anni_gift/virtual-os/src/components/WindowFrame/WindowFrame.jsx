@@ -53,7 +53,7 @@ const WindowFrame = ({ title, children, onClose, onMinimize, zIndex, onFocus, is
   const interactionRef = useRef(null);
 
   const startInteraction = (e, dir) => {
-    if (e.button !== 0 || isMaximized || (dir === 'move' && e.target.closest('button'))) return;
+    if (e.button !== 0 || isMaximized || window.innerWidth <= 640 || e.pointerType === 'touch' || (dir === 'move' && e.target.closest('button'))) return;
     interactionRef.current = {
       pointerId: e.pointerId,
       dir,

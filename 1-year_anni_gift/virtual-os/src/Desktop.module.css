@@ -1,0 +1,45 @@
+.desktopShell {
+  position: absolute;
+  inset: 0 0 var(--taskbar-height);
+  z-index: 1;
+  pointer-events: none;
+}
+.desktopIcons { position: absolute; inset: 0; pointer-events: none; }
+.desktopIcons > * { pointer-events: auto; }
+.desktopWidgets { pointer-events: none; }
+.desktopWidgets > * { pointer-events: auto; }
+
+@media (max-width: 640px) {
+  .desktopShell {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 20px 10px 24px;
+    pointer-events: auto;
+  }
+  .desktopIcons {
+    position: relative;
+    inset: auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px 4px;
+    align-items: start;
+  }
+  .desktopWidgets {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .desktopWidgets > * {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    min-width: 0;
+    width: 100%;
+    touch-action: pan-y;
+  }
+}
+@media (max-width: 380px) {
+  .desktopWidgets { grid-template-columns: minmax(0, 1fr); }
+}
