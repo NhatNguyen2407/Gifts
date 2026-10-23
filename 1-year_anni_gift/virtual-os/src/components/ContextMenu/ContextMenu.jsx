@@ -19,7 +19,7 @@ const ContextMenu = ({ x, y, onClose, onRefresh, onChangeWallpaper, onLock, onSh
   return (
     <div 
       className={styles.contextMenu} 
-      style={{ top: `${y}px`, left: `${x}px` }}
+      style={{ top: Math.max(8, Math.min(y, window.innerHeight - 292)), left: Math.max(8, Math.min(x, window.innerWidth - 192)) }}
       onClick={(e) => e.stopPropagation()} 
       onContextMenu={(e) => e.preventDefault()} /* Ngăn click chuột phải vào menu này sinh lỗi */
     >

@@ -68,3 +68,11 @@
     max-width: 80vw;
   }
 }
+@media (max-width: 640px) {
+  .banner {
+    top: 6px;
+    max-width: calc(100vw - 20px);
+    white-space: normal;
+    pointer-events: none;
+  }
+}
