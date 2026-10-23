@@ -125,6 +125,9 @@
 
 .content {
   flex: 1;
+  min-width: 0;
+  min-height: 0;
+  container-type: inline-size;
   overflow: hidden;
   position: relative;
   background-color: #ffffff;
@@ -184,4 +187,22 @@
 .noSelect {
   user-select: none;
   -webkit-user-select: none;
+}
+@media (max-width: 640px) {
+  .window {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: calc(100dvh - var(--taskbar-height)) !important;
+    border: 0;
+    clip-path: none;
+    filter: none;
+    animation: none;
+  }
+  .header { min-height: 44px; padding: 5px 10px; cursor: default; touch-action: auto; }
+  .title { font-size: 19px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .controls { flex: 0 0 auto; }
+  .btn { width: 34px; height: 34px; }
+  .controls .btn:nth-child(2), .resizeHandle, .resizerVisual { display: none; }
+  .content { min-height: 0; }
 }

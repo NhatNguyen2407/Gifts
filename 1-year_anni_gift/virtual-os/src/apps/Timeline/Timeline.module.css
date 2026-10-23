@@ -233,3 +233,24 @@
   .motionEnabled .storyEntry.revealed .photoCard { animation: none !important; }
   .timelineProgress, .photoCard { transition: none; }
 }
+
+@container (max-width: 690px) {
+  .story { padding: 34px 13px 10px 48px; }
+  .timelineRail { left: 25px; }
+  .storyEntry { display: block; margin-bottom: 29px; }
+  .monthMarker { position: absolute; left: -46px; top: 13px; width: 34px; height: 34px; font-size: 18px; }
+  .chapterCard { width: 100%; padding: 14px; }
+  .chapterCard::before { left: -15px !important; right: auto !important; top: 27px; width: 14px; }
+}
+@container (max-width: 380px) {
+  .hero { padding: 26px 12px; }
+  .story { padding-left: 42px; padding-right: 8px; }
+  .timelineRail { left: 20px; }
+  .monthMarker { left: -36px; width: 28px; height: 28px; border-width: 2px; font-size: 16px; }
+  .chapterCard { padding: 10px; }
+  .chapterTitle { font-size: 21px; }
+  .collage { gap: 5px; }
+  .photoCard { padding: 3px; }
+  .viewerArrow { width: 24px; }
+  .viewerImage { max-width: calc(100% - 58px); }
+}

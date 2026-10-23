@@ -7,6 +7,7 @@
 
   /* Đơn vị "pixel" dùng cho góc bậc thang - đổi số này để scale toàn bộ góc pixel trong app */
   --pixel-u: 4px;
+  --taskbar-height: 60px;
 }
 
 * {
@@ -18,6 +19,7 @@
 html, body, #root {
   width: 100%;
   height: 100%;
+  height: 100dvh;
   overflow: hidden; /* Giữ màn hình cố định như máy tính thật */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -73,4 +75,7 @@ input[type="range"],
     calc(100% - 3px) 100%, 3px 100%,
     0 calc(100% - 3px), 0 3px
   );
+}
+@media (max-width: 640px) {
+  html, body, #root { overscroll-behavior: none; -webkit-text-size-adjust: 100%; }
 }

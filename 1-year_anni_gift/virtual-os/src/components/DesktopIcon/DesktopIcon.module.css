@@ -74,3 +74,21 @@
   outline: none;
   cursor: url('../../assets/cursors/arrow.svg') 1 1, text;
 }
+@media (max-width: 640px) {
+  .iconContainer {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100%;
+    min-width: 0;
+    padding: 9px 3px;
+    gap: 5px;
+    touch-action: manipulation;
+  }
+  .imageWrapper { width: 52px; height: 52px; }
+  .label { font-size: 16px; }
+}
+@media (max-width: 360px) {
+  .imageWrapper { width: 45px; height: 45px; }
+  .label { font-size: 15px; }
+}

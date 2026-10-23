@@ -56,6 +56,19 @@ const DesktopIcon = ({ id, iconSrc, title, initialPosition, onDoubleClick, isRef
           opacity: isRefreshing ? 0 : 1,
         }}
         onMouseDown={onDragMouseDown}
+        role="button"
+        tabIndex={0}
+        aria-label={`Open ${title}`}
+        onClick={(e) => {
+          if (!isRenaming && !e.target.closest('input') && window.matchMedia('(pointer: coarse)').matches) handleDoubleClick();
+        }}
+        onKeyDown={(e) => {
+          if (e.target !== e.currentTarget || isRenaming) return;
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleDoubleClick();
+          }
+        }}
         onDoubleClick={handleDoubleClick}
         onContextMenu={handleContextMenu}
       >

@@ -19,7 +19,7 @@ const IconContextMenu = ({ x, y, onClose, onOpen, onRename, onProperties }) => {
     <div
       ref={menuRef}
       className={styles.menu}
-      style={{ top: y, left: x }}
+      style={{ top: Math.max(8, Math.min(y, window.innerHeight - 190)), left: Math.max(8, Math.min(x, window.innerWidth - 170)) }}
       onClick={(e) => e.stopPropagation()}
       onContextMenu={(e) => e.preventDefault()}
     >

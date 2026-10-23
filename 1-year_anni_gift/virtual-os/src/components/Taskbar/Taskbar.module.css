@@ -293,3 +293,28 @@
   .tabIcon { width: 17px; height: 17px; flex-shrink: 0; }
   .systemTray { padding: 4px 6px; gap: 5px; }
 }
+
+@media (max-width: 640px) {
+  .taskbar { height: var(--taskbar-height); padding: 0 6px; gap: 4px; }
+  .leftSection { gap: 0; flex: 0 0 auto; }
+  .startBtn { min-height: 42px; padding: 5px 9px; font-size: 20px; gap: 4px; }
+  .windowTabs { min-width: 0; margin: 0 3px; gap: 4px; }
+  .tab { flex: 0 0 auto; max-width: 105px; min-height: 38px; padding: 4px 6px; font-size: 14px; gap: 4px; }
+  .tabIcon { width: 16px; height: 16px; }
+  .systemTray { flex: 0 0 auto; gap: 2px; padding: 4px; border-width: 2px; }
+  .systemTray > .trayItem:first-child,
+  .systemTray > .trayItem:nth-child(3),
+  .volumeSlider { display: none; }
+  .volumeTrayItem { padding: 2px; }
+  .muteBtn { width: 28px; height: 30px; justify-content: center; }
+  .pixelIcon { width: 18px; height: 18px; }
+  .clockBox { padding-left: 4px; }
+  .timeText { font-size: 17px; }
+  .dateText { font-size: 12px; }
+  .showDesktopBtn { width: 9px; margin-left: 3px; min-height: 30px; }
+}
+@media (max-width: 360px) {
+  .startBtn { font-size: 18px; padding: 5px 7px; }
+  .dateText { display: none; }
+  .tabTitle { max-width: 45px; }
+}

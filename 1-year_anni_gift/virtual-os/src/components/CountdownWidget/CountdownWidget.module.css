@@ -54,3 +54,7 @@
   .mainLine { font-size: 14px; }
   .timeLine { font-size: 13px; }
 }
+@media (max-width: 640px) {
+  .widget { display: flex; flex-direction: column; justify-content: center; min-height: 118px; }
+  .mainLine { white-space: normal; overflow-wrap: anywhere; }
+}

@@ -181,3 +181,11 @@
 .container::-webkit-scrollbar { width: 8px; }
 .container::-webkit-scrollbar-track { background: #f0e0f5; }
 .container::-webkit-scrollbar-thumb { background-color: #ce93d8; border: 0; }
+@container (max-width: 420px) {
+  .container { padding: 12px; }
+  .progressWrap { gap: 6px; margin-bottom: 12px; }
+  .question { font-size: 17px; margin-bottom: 14px; overflow-wrap: anywhere; }
+  .optionBtn { font-size: 15px; padding: 11px 10px; min-height: 44px; }
+  .feedbackBox { padding: 11px; }
+  .resultScreen { justify-content: flex-start; padding-top: 16px; }
+}

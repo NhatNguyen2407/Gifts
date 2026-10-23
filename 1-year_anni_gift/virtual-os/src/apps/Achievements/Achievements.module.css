@@ -104,3 +104,10 @@
 .list::-webkit-scrollbar { width: 8px; }
 .list::-webkit-scrollbar-track { background: #f0e0f5; }
 .list::-webkit-scrollbar-thumb { background-color: #ce93d8; border: 0; }
+@container (max-width: 420px) {
+  .container { padding: 8px; }
+  .statusBar { gap: 7px; flex-wrap: wrap; padding: 6px 8px; }
+  .card { gap: 8px; padding: 8px; }
+  .icon { width: 28px; font-size: 23px; }
+  .title, .description { overflow-wrap: anywhere; }
+}

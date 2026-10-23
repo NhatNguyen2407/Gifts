@@ -60,3 +60,8 @@
   background-color: #7b1fa2;
   border: 0;
 }
+@container (max-width: 420px) {
+  .container { padding: 8px; }
+  .prompt { max-width: 36%; overflow-wrap: anywhere; }
+  .input { min-width: 0; font-size: 16px; }
+}

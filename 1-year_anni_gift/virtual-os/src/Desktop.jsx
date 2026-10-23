@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import WindowFrame from './components/WindowFrame/WindowFrame';
+import styles from './Desktop.module.css';
 import DesktopIcon from './components/DesktopIcon/DesktopIcon';
 import Taskbar from './components/Taskbar/Taskbar';
 import StartMenu from './components/StartMenu/StartMenu';
@@ -57,7 +58,8 @@ const Desktop = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { playClick, playOpen, playClose } = useSound();
   const { unlock } = useAchievements();
-  const [fakeScreen, setFakeScreen] = useState(null); 
+  const [fakeScreen, setFakeScreen] = useState(null);
+  const desktopRows = Math.max(1, Math.floor((window.innerHeight - 90) / 112)); 
 
   useEffect(() => {
     const handleSecretCombo = (e) => {
@@ -169,7 +171,7 @@ const Desktop = () => {
 
     return {
       width: '100vw',
-      height: '100vh',
+      height: '100dvh',
       backgroundColor: bgColor,
       backgroundImage: `
         radial-gradient(${dotColor} 1.5px, transparent 1.5px),
@@ -191,24 +193,30 @@ const Desktop = () => {
         setContextMenu(null);
       }}
     >
-      {APPS.map((app, index) => (
-        <DesktopIcon 
-          key={app.id}
-          id={app.id}
-          iconSrc={app.icon} 
-          title={app.title}
-          initialPosition={{ x: 20, y: 20 + index * 110 }}
-          onDoubleClick={() => handleOpenApp(app.id)} 
-          isRefreshing={isRefreshing}
-        />
-      ))}
+      <div className={styles.desktopShell}>
+        <div className={styles.desktopIcons}>
+          {APPS.map((app, index) => (
+            <DesktopIcon
+              key={app.id}
+              id={app.id}
+              iconSrc={app.icon}
+              title={app.title}
+              initialPosition={{ x: 20 + Math.floor(index / desktopRows) * 136, y: 20 + (index % desktopRows) * 112 }}
+              onDoubleClick={() => handleOpenApp(app.id)}
+              isRefreshing={isRefreshing}
+            />
+          ))}
+        </div>
+        <div className={styles.desktopWidgets}>
+          <StickyNote />
+          <CountdownWidget />
+          <WeatherWidget />
+        </div>
+      </div>
 
       <FloatingElements />
-      <StickyNote />
       <PixelPet />
-      <CountdownWidget />
       <SpecialDayBanner />
-      <WeatherWidget />
       <AchievementToast />
 
       {openWindows.map((openedApp) => {

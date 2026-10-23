@@ -233,3 +233,31 @@
   font-weight: bold;
 }
 .closeBtn:hover { transform: scale(1.1); }
+@container (max-width: 550px) {
+  .container { flex-direction: column; }
+  .sidebar {
+    width: 100%;
+    padding: 7px;
+    border-right: 0;
+    border-bottom: 2px solid #ce93d8;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    overflow-x: auto;
+  }
+  .sidebarTitle { display: none; }
+  .navBtn { flex: 1 0 auto; justify-content: center; white-space: nowrap; font-size: 15px; }
+  .content { min-height: 0; min-width: 0; }
+  .topBar { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .imageGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; padding: 9px; }
+  .imageCard { min-width: 0; padding: 6px 6px 10px; }
+  .imageCard:hover { transform: none; }
+  .modalContent { max-width: 94%; max-height: 94%; padding: 10px; overflow-y: auto; }
+  .fullImg { max-height: min(45dvh, 300px); }
+  .fullCaption { font-size: 15px; }
+  .closeBtn { top: 3px; right: 3px; }
+}
+@container (max-width: 320px) {
+  .imageGrid { grid-template-columns: minmax(0, 1fr); }
+}
