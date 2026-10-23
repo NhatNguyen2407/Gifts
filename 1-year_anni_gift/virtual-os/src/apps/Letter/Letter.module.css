@@ -51,3 +51,8 @@
 @keyframes blinker {
   50% { opacity: 0; }
 }
+@container (max-width: 460px) {
+  .container { padding: 6px; min-height: 0; }
+  .notepad { min-height: 0; padding: 12px; }
+  .text { font-size: 18px; line-height: 1.55; overflow-wrap: anywhere; }
+}

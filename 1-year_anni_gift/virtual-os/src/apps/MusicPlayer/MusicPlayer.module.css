@@ -264,3 +264,18 @@
   background:
     repeating-radial-gradient(circle, #30263c 0 2px, #57426a 3px 4px, #30263c 5px 6px);
 }
+
+@container (max-width: 550px) {
+  .container { gap: 9px; padding: 10px; }
+  .tabBar { gap: 5px; padding-bottom: 5px; }
+  .tabBtn { min-width: 0; flex: 1; padding: 6px 4px; font-size: 16px; }
+  .playlistGrid, .pastGrid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .tabContent { gap: 9px; }
+  .songCard { padding: 8px; gap: 9px; }
+  .vinylWrapper { flex: 0 0 44px; width: 44px; height: 44px; }
+  .pastImg { max-width: 100%; }
+  .sectionHeading { font-size: 21px; }
+}
+@container (max-width: 340px) {
+  .tabBtn { font-size: 14px; }
+}
